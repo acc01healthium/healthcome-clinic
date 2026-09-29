@@ -154,6 +154,16 @@
         登入管理後台
       </button>
 
+      <button type="button" id="forgotPassword" style="
+  background:none;
+  color:#358f7f;
+  margin-top:12px;
+  padding:6px;
+  font-size:14px;
+  font-weight:500;
+">
+  忘記密碼？
+</button>
       <div id="message"></div>
 
     </form>
@@ -187,7 +197,49 @@ const loginButton =
 
 const message =
   document.getElementById('message');
+const forgotPassword =
+  document.getElementById('forgotPassword');
 
+forgotPassword.addEventListener('click', async function() {
+
+  const email =
+    document.getElementById('email').value.trim();
+
+  if (!email) {
+    message.textContent = '請先輸入管理員帳號';
+    message.className = 'error';
+    return;
+  }
+
+  forgotPassword.disabled = true;
+  forgotPassword.textContent = '寄送中...';
+
+  const { error } = await db.auth.resetPasswordForEmail(
+    email,
+    {
+      redirectTo:
+        'https://healthcome.healthium.com.tw/reset-password.html'
+    }
+  );
+
+  if (error) {
+    message.textContent =
+      '寄送失敗：' + error.message;
+    message.className = 'error';
+
+    forgotPassword.disabled = false;
+    forgotPassword.textContent = '忘記密碼？';
+    return;
+  }
+
+  message.textContent =
+    '密碼重設信已寄出，請至 Email 收信';
+  message.className = 'success';
+
+  forgotPassword.disabled = false;
+  forgotPassword.textContent = '忘記密碼？';
+
+});
 
 loginForm.addEventListener('submit', async function(e) {
 
