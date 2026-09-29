@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>立康診所｜網站管理後台</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      background: #f2f7f3;
+      color: #24453d;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 430px;
+      background: white;
+      border-radius: 18px;
+      padding: 42px;
+      box-shadow: 0 12px 40px rgba(36,69,61,.12);
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      color: #358f7f;
+      font-size: 30px;
+      letter-spacing: 4px;
+    }
+
+    .brand p {
+      margin: 10px 0 0;
+      color: #82948f;
+      font-size: 14px;
+    }
+
+    label {
+      display: block;
+      margin: 18px 0 7px;
+      font-weight: 600;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #d5dfdc;
+      border-radius: 9px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #35a18d;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 24px;
+      padding: 14px;
+      border: 0;
+      border-radius: 9px;
+      background: #358f7f;
+      color: white;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #28796c;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    #message {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 14px;
+      min-height: 20px;
+    }
+
+    .error {
+      color: #c44c4c;
+    }
+
+    .success {
+      color: #27866f;
+    }
+
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+      color: #9aa7a3;
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="page">
+
+  <div class="login-box">
+
+    <div class="brand">
+      <h1>立康診所</h1>
+      <p>網站管理後台</p>
+    </div>
+
+    <form id="loginForm">
+
+      <label for="email">管理員帳號</label>
+      <input
+        id="email"
+        type="email"
+        value="acc.01.healthium@gmail.com"
+        autocomplete="username"
+        required
+      >
+
+      <label for="password">密碼</label>
+      <input
+        id="password"
+        type="password"
+        placeholder="請輸入密碼"
+        autocomplete="current-password"
+        required
+      >
+
+      <button id="loginButton" type="submit">
+        登入管理後台
+      </button>
+
+      <div id="message"></div>
+
+    </form>
+
+    <div class="footer">
+      HealthCome Clinic Website Management
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+const SUPABASE_URL =
+  'https://utwhtjtgwryeljgwlwzm.supabase.co';
+
+const SUPABASE_KEY =
+  'sb_publishable_207N7AlFmADOQAdTxcahEg_iVAdw4KU';
+
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+const loginForm =
+  document.getElementById('loginForm');
+
+const loginButton =
+  document.getElementById('loginButton');
+
+const message =
+  document.getElementById('message');
+
+
+loginForm.addEventListener('submit', async function(e) {
+
+  e.preventDefault();
+
+  message.textContent = '';
+  message.className = '';
+
+  loginButton.disabled = true;
+  loginButton.textContent = '登入中...';
+
+  const email =
+    document.getElementById('email').value.trim();
+
+  const password =
+    document.getElementById('password').value;
+
+  const { data, error } =
+    await db.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
+
+  if (error) {
+
+    message.textContent =
+      '登入失敗：' + error.message;
+
+    message.className = 'error';
+
+    loginButton.disabled = false;
+    loginButton.textContent = '登入管理後台';
+
+    return;
+  }
+
+  message.textContent = '登入成功';
+  message.className = 'success';
+
+  setTimeout(function() {
+    window.location.href = 'dashboard.html';
+  }, 700);
+
+});
+
+</script>
+
+</body>
+</html>
