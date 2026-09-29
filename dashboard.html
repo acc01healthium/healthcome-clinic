@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>立康診所｜網站管理後台</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      background: #f4f8f5;
+      color: #24453d;
+    }
+
+    header {
+      height: 72px;
+      background: white;
+      border-bottom: 1px solid #e2ebe7;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 35px;
+    }
+
+    .brand {
+      font-size: 24px;
+      font-weight: 700;
+      color: #358f7f;
+      letter-spacing: 3px;
+    }
+
+    .logout {
+      border: 1px solid #358f7f;
+      background: white;
+      color: #358f7f;
+      padding: 9px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .layout {
+      display: flex;
+      min-height: calc(100vh - 72px);
+    }
+
+    aside {
+      width: 230px;
+      background: #2f786b;
+      padding: 25px 15px;
+    }
+
+    aside button {
+      display: block;
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: white;
+      text-align: left;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-bottom: 7px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    aside button:hover,
+    aside button.active {
+      background: rgba(255,255,255,.16);
+    }
+
+    main {
+      flex: 1;
+      padding: 40px;
+    }
+
+    .welcome {
+      background: white;
+      padding: 30px;
+      border-radius: 14px;
+      box-shadow: 0 4px 20px rgba(36,69,61,.07);
+    }
+
+    .welcome h1 {
+      margin-top: 0;
+      color: #2f786b;
+    }
+
+    #loading {
+      position: fixed;
+      inset: 0;
+      background: #f4f8f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      color: #358f7f;
+      z-index: 999;
+    }
+
+    #dashboard {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="loading">
+  正在確認管理員身分...
+</div>
+
+<div id="dashboard">
+
+  <header>
+    <div class="brand">
+      立康診所｜網站管理後台
+    </div>
+
+    <button class="logout" id="logoutButton">
+      登出
+    </button>
+  </header>
+
+  <div class="layout">
+
+    <aside>
+      <button class="active">首頁內容</button>
+      <button>醫師團隊</button>
+      <button>醫療服務</button>
+      <button>門診時間</button>
+      <button>最新消息</button>
+      <button>基本設定</button>
+    </aside>
+
+    <main>
+
+      <div class="welcome">
+        <h1>歡迎進入立康診所網站管理後台</h1>
+
+        <p id="adminEmail"></p>
+
+        <p>
+          之後您可以從左側選單修改網站內容，
+          儲存後前台網站即可同步更新。
+        </p>
+      </div>
+
+    </main>
+
+  </div>
+
+</div>
+
+
+<script>
+
+const SUPABASE_URL =
+  'https://utwhtjtgwryeljgwlwzm.supabase.co';
+
+const SUPABASE_KEY =
+  'sb_publishable_207N7AlFmADOQAdTxcahEg_iVAdw4KU';
+
+const db = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+
+
+async function checkLogin() {
+
+  const {
+    data: { session }
+  } = await db.auth.getSession();
+
+  if (!session) {
+    window.location.href = 'admin.html';
+    return;
+  }
+
+  const email = session.user.email;
+
+  if (email !== 'acc.01.healthium@gmail.com') {
+
+    await db.auth.signOut();
+
+    window.location.href = 'admin.html';
+    return;
+  }
+
+  document.getElementById('adminEmail').textContent =
+    '目前登入帳號：' + email;
+
+  document.getElementById('loading').style.display =
+    'none';
+
+  document.getElementById('dashboard').style.display =
+    'block';
+}
+
+
+document
+  .getElementById('logoutButton')
+  .addEventListener('click', async function() {
+
+    await db.auth.signOut();
+
+    window.location.href = 'admin.html';
+
+  });
+
+
+checkLogin();
+
+</script>
+
+</body>
+</html>
