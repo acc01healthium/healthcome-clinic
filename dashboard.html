@@ -133,27 +133,35 @@
 
     <aside>
       <button class="active">首頁內容</button>
-      <button>醫師團隊</button>
+      <button id="doctorMenuButton">醫師團隊</button>
       <button>醫療服務</button>
       <button>門診時間</button>
       <button>最新消息</button>
       <button>基本設定</button>
     </aside>
 
-    <main>
+<main>
 
-      <div class="welcome">
-        <h1>歡迎進入立康診所網站管理後台</h1>
+  <div class="welcome" id="welcomePanel">
+    <h1>歡迎進入立康診所網站管理後台</h1>
 
-        <p id="adminEmail"></p>
+    <p id="adminEmail"></p>
 
-        <p>
-          之後您可以從左側選單修改網站內容，
-          儲存後前台網站即可同步更新。
-        </p>
-      </div>
+    <p>
+      請從左側選單選擇要管理的網站內容。
+    </p>
+  </div>
 
-    </main>
+  <div id="doctorPanel" style="display:none;">
+    <h1>醫師團隊管理</h1>
+    <p>在這裡管理立康診所的醫師資料。</p>
+
+    <div id="doctorList">
+      正在讀取醫師資料...
+    </div>
+  </div>
+
+</main>
 
   </div>
 
@@ -215,7 +223,93 @@ document
     window.location.href = 'admin.html';
 
   });
+const doctorMenuButton = document.getElementById('doctorMenuButton');
+const welcomePanel = document.getElementById('welcomePanel');
+const doctorPanel = document.getElementById('doctorPanel');
+const doctorList = document.getElementById('doctorList');
 
+doctorMenuButton.addEventListener('click', async function () {
+
+  welcomePanel.style.display = 'none';
+  doctorPanel.style.display = 'block';
+
+  doctorList.innerHTML = '正在讀取醫師資料...';
+
+  const { data: doctors, error } = await db
+    .from('healthcome_doctors')
+    .select('*')
+    .order('sort_order', { ascending: true });
+
+  if (error) {
+    doctorList.innerHTML =
+      '<p style="color:#d9534f;">讀取失敗：' + error.message + '</p>';
+    return;
+  }
+
+  if (!doctors || doctors.length === 0) {
+    doctorList.innerHTML = '<p>目前沒有醫師資料。</p>';
+    return;
+  }
+
+  doctorList.innerHTML = doctors.map(function (doctor) {
+
+    return `
+      <div style="
+        background:white;
+        border:1px solid #e2ebe7;
+        border-radius:12px;
+        padding:18px;
+        margin-bottom:12px;
+      ">
+        <div style="
+          display:flex;
+          justify-content:space-between;
+          align-items:center;
+          gap:20px;
+        ">
+
+          <div>
+            <h3 style="margin:0 0 8px 0;">
+              ${doctor.name || ''}
+              <span style="
+                font-size:14px;
+                font-weight:normal;
+                color:#718078;
+              ">
+                ${doctor.title || ''}
+              </span>
+            </h3>
+
+            <div style="color:#358f7f;font-weight:600;">
+              ${doctor.specialty || ''}
+            </div>
+
+            <div style="margin-top:6px;color:#6c7772;">
+              ${doctor.slogan || ''}
+            </div>
+          </div>
+
+          <div style="text-align:right;">
+            <div style="font-size:13px;color:#8a9690;">
+              排序 ${doctor.sort_order || ''}
+            </div>
+
+            <div style="
+              margin-top:6px;
+              font-size:13px;
+              color:${doctor.is_active ? '#358f7f' : '#d9534f'};
+            ">
+              ${doctor.is_active ? '顯示中' : '已隱藏'}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    `;
+
+  }).join('');
+
+});
 
 checkLogin();
 
