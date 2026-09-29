@@ -14,6 +14,16 @@
 <article class="doctor" data-img="assets/doctors/wu-qilin.jpg"><img src="assets/doctors/wu-qilin.jpg" alt="吳奇霖醫師介紹"><div class="meta"><h3>吳奇霖 醫師</h3><p>神經內科・慢性病照護</p></div></article>
 <article class="doctor" data-img="assets/doctors/zhangjian-shixin.png"><img src="assets/doctors/zhangjian-shixin.png" alt="張簡世新醫師介紹"><div class="meta"><h3>張簡世新 醫師</h3><p>家庭醫學・急慢性病照護</p></div></article>
 </div></section>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://utwhtjtgwryeljgwlwzm.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_207N7AlFmADOQAdTxcahEg_iVAdw4KU';
+
+  const healthcomeSupabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+</script>
 <section class="contact" id="contact"><div class="contactbox"><div><h2>聯絡資訊</h2><div class="row"><strong>電話</strong><a href="tel:0226863898">02-26863898</a></div><div class="row"><strong>LINE ID</strong><span>@106tdddj</span></div><div class="row"><strong>地址</strong><span>新北市樹林區中山路一段 123 號</span></div></div><div><h2>門診時間</h2><div class="row"><strong>早診</strong>08:30–12:00</div><div class="row"><strong>午診</strong>14:00–17:30</div><div class="row"><strong>晚診</strong>18:00–21:00</div><div class="note">週六、週日晚診休診；其餘時段依門診表。</div></div></div></section>
 <div class="modal" id="modal" aria-hidden="true"><button class="close" aria-label="關閉">×</button><img id="modalImg" alt="醫師完整介紹海報"></div><footer class="footer">© 2026 立康診所 HealthCome Clinic</footer>
 <script>const m=document.getElementById('modal'),mi=document.getElementById('modalImg');document.querySelectorAll('.doctor').forEach(x=>x.onclick=()=>{mi.src=x.dataset.img;m.classList.add('open');m.setAttribute('aria-hidden','false')});function closeM(){m.classList.remove('open');m.setAttribute('aria-hidden','true')}document.querySelector('.close').onclick=closeM;m.onclick=e=>{if(e.target===m)closeM()};document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});</script></body></html>
