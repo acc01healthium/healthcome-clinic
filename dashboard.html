@@ -167,7 +167,75 @@
 
 </div>
 
+<!-- 醫師編輯視窗 -->
+<div id="doctorEditModal" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.35);
+  z-index:9999;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+">
 
+  <div style="
+    background:white;
+    width:100%;
+    max-width:620px;
+    border-radius:16px;
+    padding:28px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.18);
+  ">
+
+    <h2 style="margin-top:0;color:#24453d;">
+      編輯醫師資料
+    </h2>
+
+    <input type="hidden" id="editDoctorId">
+
+    <label>醫師姓名</label>
+    <input id="editDoctorName" type="text" style="width:100%;padding:12px;margin:6px 0 16px;">
+
+    <label>職稱</label>
+    <input id="editDoctorTitle" type="text" style="width:100%;padding:12px;margin:6px 0 16px;">
+
+    <label>專科</label>
+    <input id="editDoctorSpecialty" type="text" style="width:100%;padding:12px;margin:6px 0 16px;">
+
+    <label>介紹文字</label>
+    <textarea id="editDoctorSlogan" rows="3" style="width:100%;padding:12px;margin:6px 0 16px;"></textarea>
+
+    <label>排序</label>
+    <input id="editDoctorSortOrder" type="number" style="width:100%;padding:12px;margin:6px 0 20px;">
+
+    <div style="display:flex;justify-content:flex-end;gap:10px;">
+
+      <button type="button" onclick="closeDoctorEdit()" style="
+        padding:10px 20px;
+        background:white;
+        border:1px solid #aaa;
+        border-radius:8px;
+        cursor:pointer;
+      ">
+        取消
+      </button>
+
+      <button type="button" onclick="saveDoctorEdit()" style="
+        padding:10px 20px;
+        background:#358f7f;
+        color:white;
+        border:0;
+        border-radius:8px;
+        cursor:pointer;
+      ">
+        儲存變更
+      </button>
+
+    </div>
+
+  </div>
+</div>
 <script>
 
 const SUPABASE_URL =
@@ -338,38 +406,59 @@ async function editDoctor(id) {
     return;
   }
 
-  const name = prompt('醫師姓名', doctor.name || '');
-  if (name === null) return;
+  document.getElementById('editDoctorId').value = doctor.id;
+  document.getElementById('editDoctorName').value = doctor.name || '';
+  document.getElementById('editDoctorTitle').value = doctor.title || '';
+  document.getElementById('editDoctorSpecialty').value = doctor.specialty || '';
+  document.getElementById('editDoctorSlogan').value = doctor.slogan || '';
+  document.getElementById('editDoctorEducation').value = doctor.education || '';
+  document.getElementById('editDoctorExperience').value = doctor.experience || '';
+  document.getElementById('editDoctorExpertise').value = doctor.expertise || '';
+  document.getElementById('editDoctorPhotoUrl').value = doctor.photo_url || '';
+  document.getElementById('editDoctorPosterUrl').value = doctor.poster_url || '';
+  document.getElementById('editDoctorSortOrder').value = doctor.sort_order || '';
+  document.getElementById('editDoctorActive').checked = doctor.is_active !== false;
 
-  const title = prompt('職稱', doctor.title || '');
-  if (title === null) return;
+  document.getElementById('doctorEditModal').style.display = 'flex';
+}
 
-  const specialty = prompt('專科', doctor.specialty || '');
-  if (specialty === null) return;
 
-  const slogan = prompt('介紹文字', doctor.slogan || '');
-  if (slogan === null) return;
+function closeDoctorEditModal() {
+  document.getElementById('doctorEditModal').style.display = 'none';
+}
 
-  const sortOrder = prompt('排序', doctor.sort_order || '');
-  if (sortOrder === null) return;
 
-  const { error: updateError } = await db
+async function saveDoctorEdit() {
+
+  const id = document.getElementById('editDoctorId').value;
+
+  const updateData = {
+    name: document.getElementById('editDoctorName').value.trim(),
+    title: document.getElementById('editDoctorTitle').value.trim(),
+    specialty: document.getElementById('editDoctorSpecialty').value.trim(),
+    slogan: document.getElementById('editDoctorSlogan').value.trim(),
+    education: document.getElementById('editDoctorEducation').value.trim(),
+    experience: document.getElementById('editDoctorExperience').value.trim(),
+    expertise: document.getElementById('editDoctorExpertise').value.trim(),
+    photo_url: document.getElementById('editDoctorPhotoUrl').value.trim(),
+    poster_url: document.getElementById('editDoctorPosterUrl').value.trim(),
+    sort_order: Number(document.getElementById('editDoctorSortOrder').value),
+    is_active: document.getElementById('editDoctorActive').checked
+  };
+
+  const { error } = await db
     .from('healthcome_doctors')
-    .update({
-      name: name.trim(),
-      title: title.trim(),
-      specialty: specialty.trim(),
-      slogan: slogan.trim(),
-      sort_order: Number(sortOrder)
-    })
+    .update(updateData)
     .eq('id', id);
 
-  if (updateError) {
-    alert('儲存失敗：' + updateError.message);
+  if (error) {
+    alert('儲存失敗：' + error.message);
     return;
   }
 
   alert('醫師資料已儲存');
+
+  closeDoctorEditModal();
 
   doctorMenuButton.click();
 }
