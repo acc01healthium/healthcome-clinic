@@ -290,6 +290,21 @@ doctorMenuButton.addEventListener('click', async function () {
           </div>
 
           <div style="text-align:right;">
+          <button
+  onclick="editDoctor(${doctor.id})"
+  style="
+    padding:6px 14px;
+    margin-bottom:8px;
+    border:1px solid #358f7f;
+    border-radius:6px;
+    background:white;
+    color:#358f7f;
+    cursor:pointer;
+  "
+>
+  編輯
+</button>
+<br>
             <div style="font-size:13px;color:#8a9690;">
               排序 ${doctor.sort_order || ''}
             </div>
@@ -310,7 +325,54 @@ doctorMenuButton.addEventListener('click', async function () {
   }).join('');
 
 });
+async function editDoctor(id) {
 
+  const { data: doctor, error } = await db
+    .from('healthcome_doctors')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    alert('讀取醫師資料失敗：' + error.message);
+    return;
+  }
+
+  const name = prompt('醫師姓名', doctor.name || '');
+  if (name === null) return;
+
+  const title = prompt('職稱', doctor.title || '');
+  if (title === null) return;
+
+  const specialty = prompt('專科', doctor.specialty || '');
+  if (specialty === null) return;
+
+  const slogan = prompt('介紹文字', doctor.slogan || '');
+  if (slogan === null) return;
+
+  const sortOrder = prompt('排序', doctor.sort_order || '');
+  if (sortOrder === null) return;
+
+  const { error: updateError } = await db
+    .from('healthcome_doctors')
+    .update({
+      name: name.trim(),
+      title: title.trim(),
+      specialty: specialty.trim(),
+      slogan: slogan.trim(),
+      sort_order: Number(sortOrder)
+    })
+    .eq('id', id);
+
+  if (updateError) {
+    alert('儲存失敗：' + updateError.message);
+    return;
+  }
+
+  alert('醫師資料已儲存');
+
+  doctorMenuButton.click();
+}
 checkLogin();
 
 </script>
