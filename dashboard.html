@@ -313,23 +313,39 @@
             margin-top:14px;
         ">
 
-            <div>
-                <label style="display:block;margin-bottom:6px;font-weight:600;color:#35564e;">
-                    醫師照片網址
-                </label>
-                <input id="editDoctorPhotoUrl" type="text"
-                    placeholder="例如：assets/doctors/doctor.jpg"
-                    style="width:100%;padding:10px 12px;border:1px solid #ccdcd6;border-radius:8px;">
-            </div>
+<div>
+  <label style="display:block;margin-bottom:6px;font-weight:600;color:#35564e;">
+    醫師照片
+  </label>
 
-            <div>
-                <label style="display:block;margin-bottom:6px;font-weight:600;color:#35564e;">
-                    醫師海報網址
-                </label>
-                <input id="editDoctorPosterUrl" type="text"
-                    placeholder="例如：assets/posters/doctor.jpg"
-                    style="width:100%;padding:10px 12px;border:1px solid #ccdcd6;border-radius:8px;">
-            </div>
+  <input
+    id="editDoctorPhotoFile"
+    type="file"
+    accept="image/jpeg,image/png,image/webp"
+    style="width:100%;padding:10px 12px;border:1px solid #ccdcd6;border-radius:8px;background:white;"
+  >
+
+  <input id="editDoctorPhotoUrl" type="hidden">
+
+  <div id="editDoctorPhotoPreview" style="margin-top:10px;"></div>
+</div>
+
+<div>
+  <label style="display:block;margin-bottom:6px;font-weight:600;color:#35564e;">
+    醫師海報
+  </label>
+
+  <input
+    id="editDoctorPosterFile"
+    type="file"
+    accept="image/jpeg,image/png,image/webp"
+    style="width:100%;padding:10px 12px;border:1px solid #ccdcd6;border-radius:8px;background:white;"
+  >
+
+  <input id="editDoctorPosterUrl" type="hidden">
+
+  <div id="editDoctorPosterPreview" style="margin-top:10px;"></div>
+</div>
 
         </div>
 
@@ -580,39 +596,117 @@ function closeDoctorEditModal() {
 }
 
 
+async function uploadDoctorImage(file, folder) {
+  if (!file) return null;
+
+  // 檔名副檔名
+  const extension = file.name.split('.').pop().toLowerCase();
+
+  // 產生不重複檔名
+  const fileName =
+    folder + '/' +
+    Date.now() + '-' +
+    Math.random().toString(36).substring(2, 10) +
+    '.' + extension;
+
+  // 上傳到 Supabase Storage
+  const { error: uploadError } = await db.storage
+    .from('healthcome-images')
+    .upload(fileName, file, {
+      cacheControl: '3600',
+      upsert: false
+    });
+
+  if (uploadError) {
+    throw new Error('圖片上傳失敗：' + uploadError.message);
+  }
+
+  // 取得公開圖片網址
+  const { data } = db.storage
+    .from('healthcome-images')
+    .getPublicUrl(fileName);
+
+  return data.publicUrl;
+}
+
+
 async function saveDoctorEdit() {
 
   const id = document.getElementById('editDoctorId').value;
 
-  const updateData = {
-    name: document.getElementById('editDoctorName').value.trim(),
-    title: document.getElementById('editDoctorTitle').value.trim(),
-    specialty: document.getElementById('editDoctorSpecialty').value.trim(),
-    slogan: document.getElementById('editDoctorSlogan').value.trim(),
-    education: document.getElementById('editDoctorEducation').value.trim(),
-    experience: document.getElementById('editDoctorExperience').value.trim(),
-    expertise: document.getElementById('editDoctorExpertise').value.trim(),
-    photo_url: document.getElementById('editDoctorPhotoUrl').value.trim(),
-    poster_url: document.getElementById('editDoctorPosterUrl').value.trim(),
-    sort_order: Number(document.getElementById('editDoctorSortOrder').value),
-    is_active: document.getElementById('editDoctorActive').checked
-  };
+  const photoFile =
+    document.getElementById('editDoctorPhotoFile').files[0];
 
-  const { error } = await db
-    .from('healthcome_doctors')
-    .update(updateData)
-    .eq('id', id);
+  const posterFile =
+    document.getElementById('editDoctorPosterFile').files[0];
 
-  if (error) {
+  // 保留原本圖片網址
+  let photoUrl =
+    document.getElementById('editDoctorPhotoUrl').value;
+
+  let posterUrl =
+    document.getElementById('editDoctorPosterUrl').value;
+
+  try {
+
+    // 有選新照片才上傳
+    if (photoFile) {
+      photoUrl = await uploadDoctorImage(
+        photoFile,
+        'doctors'
+      );
+    }
+
+    // 有選新海報才上傳
+    if (posterFile) {
+      posterUrl = await uploadDoctorImage(
+        posterFile,
+        'posters'
+      );
+    }
+
+    const updateData = {
+      name: document.getElementById('editDoctorName').value.trim(),
+      title: document.getElementById('editDoctorTitle').value.trim(),
+      specialty: document.getElementById('editDoctorSpecialty').value.trim(),
+      slogan: document.getElementById('editDoctorSlogan').value.trim(),
+      education: document.getElementById('editDoctorEducation').value.trim(),
+      experience: document.getElementById('editDoctorExperience').value.trim(),
+      expertise: document.getElementById('editDoctorExpertise').value.trim(),
+
+      photo_url: photoUrl,
+      poster_url: posterUrl,
+
+      sort_order: Number(
+        document.getElementById('editDoctorSortOrder').value
+      ),
+
+      is_active:
+        document.getElementById('editDoctorActive').checked
+    };
+
+    const { error } = await db
+      .from('healthcome_doctors')
+      .update(updateData)
+      .eq('id', id);
+
+    if (error) {
+      throw error;
+    }
+
+    alert('醫師資料已儲存');
+
+    closeDoctorEditModal();
+
+    doctorMenuButton.click();
+
+  } catch (error) {
+
+    console.error(error);
+
     alert('儲存失敗：' + error.message);
-    return;
+
   }
-
-  alert('醫師資料已儲存');
-
-  closeDoctorEditModal();
-
-  doctorMenuButton.click();
 }
 checkLogin();
 
