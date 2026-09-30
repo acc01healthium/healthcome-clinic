@@ -5,15 +5,14 @@
 @media(max-width:440px){.team-grid{grid-template-columns:1fr 1fr}.doctor p{font-size:13px}.doctor h3{font-size:17px}}
 </style></head><body>
 <main class="hero" id="top"><img src="assets/homepage.png" alt="立康診所首頁"><a class="hotspot home" href="#top">首頁</a><a class="hotspot about" href="#top">關於我們</a><a class="hotspot services" href="#top">醫療服務</a><a class="hotspot teamnav" href="#team">醫師團隊</a><a class="hotspot hours" href="#top">門診時間</a><a class="hotspot news" href="#top">最新消息</a><a class="hotspot traffic" href="#contact">交通資訊</a><a class="hotspot booking" href="#contact">掛號資訊</a><a class="hotspot phonehot" href="tel:0226863898">02-26863898</a></main>
-<section class="section" id="team"><h2 class="section-title">專業醫師團隊</h2><p class="section-sub">點選醫師即可查看完整醫師介紹與主治項目</p><div class="team-grid">
-<article class="doctor" data-img="assets/doctors/li-jianyu.png"><img src="assets/doctors/li-jianyu.png" alt="李建宇醫師介紹"><div class="meta"><h3>李建宇 醫師</h3><p>家庭醫學・健康管理</p></div></article>
-<article class="doctor" data-img="assets/doctors/luo-jinxiang.png"><img src="assets/doctors/luo-jinxiang.png" alt="羅錦祥醫師介紹"><div class="meta"><h3>羅錦祥 醫師</h3><p>家庭醫學・慢性病照護</p></div></article>
-<article class="doctor" data-img="assets/doctors/luo-mingyu.jpg"><img src="assets/doctors/luo-mingyu.jpg" alt="羅名宇醫師介紹"><div class="meta"><h3>羅名宇 醫師</h3><p>家庭醫學・健康管理</p></div></article>
-<article class="doctor" data-img="assets/doctors/lin-yiru.jpg"><img src="assets/doctors/lin-yiru.jpg" alt="林儀儒醫師介紹"><div class="meta"><h3>林儀儒 醫師</h3><p>神經內科・頭暈頭痛</p></div></article>
-<article class="doctor" data-img="assets/doctors/zhang-jiayun.jpg"><img src="assets/doctors/zhang-jiayun.jpg" alt="張家芸醫師介紹"><div class="meta"><h3>張家芸 醫師</h3><p>家庭醫學・健康管理</p></div></article>
-<article class="doctor" data-img="assets/doctors/wu-qilin.jpg"><img src="assets/doctors/wu-qilin.jpg" alt="吳奇霖醫師介紹"><div class="meta"><h3>吳奇霖 醫師</h3><p>神經內科・慢性病照護</p></div></article>
-<article class="doctor" data-img="assets/doctors/zhangjian-shixin.png"><img src="assets/doctors/zhangjian-shixin.png" alt="張簡世新醫師介紹"><div class="meta"><h3>張簡世新 醫師</h3><p>家庭醫學・急慢性病照護</p></div></article>
-</div></section>
+<section class="section" id="team">
+  <h2 class="section-title">專業醫師團隊</h2>
+  <p class="section-sub">點選醫師可查看完整醫師介紹</p>
+
+  <div class="team-grid" id="doctorTeam">
+    <p style="text-align:center;">醫師資料載入中...</p>
+  </div>
+</section>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   const SUPABASE_URL = 'https://utwhtjtgwryeljgwlwzm.supabase.co';
@@ -23,6 +22,73 @@
     SUPABASE_URL,
     SUPABASE_KEY
   );
+  async function loadDoctors() {
+  const doctorTeam = document.getElementById('doctorTeam');
+
+  const { data: doctors, error } = await healthcomeSupabase
+    .from('healthcome_doctors')
+    .select('*')
+    .eq('is_active', true)
+    .order('sort_order', { ascending: true });
+
+  if (error) {
+    console.error('讀取醫師資料失敗：', error);
+    doctorTeam.innerHTML = '<p style="text-align:center;">醫師資料載入失敗</p>';
+    return;
+  }
+
+  if (!doctors || doctors.length === 0) {
+    doctorTeam.innerHTML = '<p style="text-align:center;">目前尚無醫師資料</p>';
+    return;
+  }
+
+  doctorTeam.innerHTML = doctors.map(doctor => {
+    const photo = doctor.photo_url || '';
+    const name = doctor.name || '';
+    const title = doctor.title || '醫師';
+    const specialty = doctor.specialty || '';
+    const slogan = doctor.slogan || '';
+
+    return `
+      <article class="doctor"
+        data-img="${photo}"
+        data-poster="${doctor.poster_url || ''}">
+
+        <img
+          src="${photo}"
+          alt="${name}醫師介紹"
+          loading="lazy"
+        >
+
+        <div class="meta">
+          <h3>${name} ${title}</h3>
+          <p>${specialty}${slogan ? '・' + slogan : ''}</p>
+        </div>
+
+      </article>
+    `;
+  }).join('');
+
+  bindDoctorClicks();
+}
+
+function bindDoctorClicks() {
+  const modal = document.getElementById('modal');
+  const modalImg = document.getElementById('modalImg');
+
+  document.querySelectorAll('.doctor').forEach(card => {
+    card.onclick = () => {
+      const poster = card.dataset.poster;
+      const photo = card.dataset.img;
+
+      modalImg.src = poster || photo;
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+    };
+  });
+}
+
+loadDoctors();
 </script>
 <section class="contact" id="contact"><div class="contactbox"><div><h2>聯絡資訊</h2><div class="row"><strong>電話</strong><a href="tel:0226863898">02-26863898</a></div><div class="row"><strong>LINE ID</strong><span>@106tdddj</span></div><div class="row"><strong>地址</strong><span>新北市樹林區中山路一段 123 號</span></div></div><div><h2>門診時間</h2><div class="row"><strong>早診</strong>08:30–12:00</div><div class="row"><strong>午診</strong>14:00–17:30</div><div class="row"><strong>晚診</strong>18:00–21:00</div><div class="note">週六、週日晚診休診；其餘時段依門診表。</div></div></div></section>
 <div class="modal" id="modal" aria-hidden="true"><button class="close" aria-label="關閉">×</button><img id="modalImg" alt="醫師完整介紹海報"></div><footer class="footer">© 2026 立康診所 HealthCome Clinic</footer>
