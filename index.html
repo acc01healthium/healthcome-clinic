@@ -4,7 +4,7 @@
 @media(max-width:760px){.section{padding:45px 18px}.section-title{font-size:28px}.team-grid{grid-template-columns:repeat(2,1fr);gap:14px}.doctor h3{font-size:19px}.doctor .meta{padding:12px}.contact{padding:0 18px}.contactbox{grid-template-columns:1fr;padding:26px 22px}.row{font-size:17px}}
 @media(max-width:440px){.team-grid{grid-template-columns:1fr 1fr}.doctor p{font-size:13px}.doctor h3{font-size:17px}}
 </style></head><body>
-<main class="hero" id="top"><img src="assets/homepage.png" alt="立康診所首頁"><a class="hotspot home" href="#top">首頁</a><a class="hotspot about" href="#top">關於我們</a><a class="hotspot services" href="#top">醫療服務</a><a class="hotspot teamnav" href="#team">醫師團隊</a><a class="hotspot hours" href="#top">門診時間</a><a class="hotspot news" href="#top">最新消息</a><a class="hotspot traffic" href="#contact">交通資訊</a><a class="hotspot booking" href="#contact">掛號資訊</a><a class="hotspot phonehot" href="tel:0226863898">02-26863898</a></main>
+<main class="hero" id="top"><img src="assets/homepage.png" alt="立康診所首頁"><a class="hotspot home" href="#top">首頁</a><a class="hotspot about" href="#top">關於我們</a><a class="hotspot services" href="#top">醫療服務</a><a <a class="hotspot hours" href="javascript:void(0)" onclick="openHoursModal()">門診時間</a><a class="hotspot news" href="#top">最新消息</a><a class="hotspot traffic" href="#contact">交通資訊</a><a class="hotspot booking" href="#contact">掛號資訊</a><a class="hotspot phonehot" href="tel:0226863898">02-26863898</a></main>
 <section class="section" id="team">
   <h2 class="section-title">專業醫師團隊</h2>
   <p class="section-sub">點選醫師可查看完整醫師介紹</p>
@@ -92,4 +92,128 @@ loadDoctors();
 </script>
 <section class="contact" id="contact"><div class="contactbox"><div><h2>聯絡資訊</h2><div class="row"><strong>電話</strong><a href="tel:0226863898">02-26863898</a></div><div class="row"><strong>LINE ID</strong><span>@106tdddj</span></div><div class="row"><strong>地址</strong><span>新北市樹林區中山路一段 123 號</span></div></div><div><h2>門診時間</h2><div class="row"><strong>早診</strong>08:30–12:00</div><div class="row"><strong>午診</strong>14:00–17:30</div><div class="row"><strong>晚診</strong>18:00–21:00</div><div class="note">週六、週日晚診休診；其餘時段依門診表。</div></div></div></section>
 <div class="modal" id="modal" aria-hidden="true"><button class="close" aria-label="關閉">×</button><img id="modalImg" alt="醫師完整介紹海報"></div><footer class="footer">© 2026 立康診所 HealthCome Clinic</footer>
-<script>const m=document.getElementById('modal'),mi=document.getElementById('modalImg');document.querySelectorAll('.doctor').forEach(x=>x.onclick=()=>{mi.src=x.dataset.img;m.classList.add('open');m.setAttribute('aria-hidden','false')});function closeM(){m.classList.remove('open');m.setAttribute('aria-hidden','true')}document.querySelector('.close').onclick=closeM;m.onclick=e=>{if(e.target===m)closeM()};document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});</script></body></html>
+<script>const m=document.getElementById('modal'),mi=document.getElementById('modalImg');document.querySelectorAll('.doctor').forEach(x=>x.onclick=()=>{mi.src=x.dataset.img;m.classList.add('open');m.setAttribute('aria-hidden','false')});function closeM(){m.classList.remove('open');m.setAttribute('aria-hidden','true')}document.querySelector('.close').onclick=closeM;m.onclick=e=>{if(e.target===m)closeM()};document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
+</script>
+<!-- 門診時間彈出視窗 -->
+<div id="hoursModal" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(36,69,61,0.45);
+  z-index:10000;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+">
+
+  <div style="
+    background:#fff;
+    width:100%;
+    max-width:680px;
+    border-radius:20px;
+    padding:30px 34px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.22);
+    position:relative;
+  ">
+
+    <button onclick="closeHoursModal()" style="
+      position:absolute;
+      right:20px;
+      top:18px;
+      width:38px;
+      height:38px;
+      border:0;
+      border-radius:50%;
+      background:#f1f6f3;
+      color:#35564e;
+      font-size:22px;
+      cursor:pointer;
+    ">×</button>
+
+    <h2 style="
+      margin:0 0 8px;
+      color:#16764f;
+      font-size:28px;
+    ">門診時間</h2>
+
+    <p style="
+      color:#71827d;
+      margin:0 0 24px;
+    ">立康診所 HealthCome Clinic</p>
+
+    <div style="
+      border:1px solid #dce8e2;
+      border-radius:14px;
+      overflow:hidden;
+    ">
+
+      <div style="
+        display:grid;
+        grid-template-columns:1.2fr 1fr 1fr;
+        background:#edf6f1;
+        color:#35564e;
+        font-weight:700;
+        padding:14px;
+        text-align:center;
+      ">
+        <div>日期</div>
+        <div>上午</div>
+        <div>下午・晚上</div>
+      </div>
+
+      <div style="
+        display:grid;
+        grid-template-columns:1.2fr 1fr 1fr;
+        padding:18px 14px;
+        text-align:center;
+        border-top:1px solid #e5eee9;
+      ">
+        <div><strong>週一～週五</strong></div>
+        <div>07:30–12:00</div>
+        <div>14:30–21:00</div>
+      </div>
+
+      <div style="
+        display:grid;
+        grid-template-columns:1.2fr 1fr 1fr;
+        padding:18px 14px;
+        text-align:center;
+        border-top:1px solid #e5eee9;
+      ">
+        <div><strong>週六、週日</strong></div>
+        <div>07:30–12:00</div>
+        <div>14:30–18:00</div>
+      </div>
+
+    </div>
+
+    <p style="
+      margin:18px 0 0;
+      color:#71827d;
+      font-size:14px;
+      text-align:center;
+    ">
+      實際門診醫師與休診資訊，請依當日公告為準。
+    </p>
+
+  </div>
+</div>
+
+<script>
+function openHoursModal() {
+  document.getElementById('hoursModal').style.display = 'flex';
+}
+
+function closeHoursModal() {
+  document.getElementById('hoursModal').style.display = 'none';
+}
+
+document.getElementById('hoursModal').addEventListener('click', function(e) {
+  if (e.target === this) {
+    closeHoursModal();
+  }
+});
+</script>
+  
+</body>
+</html>
