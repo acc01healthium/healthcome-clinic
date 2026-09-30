@@ -169,91 +169,224 @@
 
 <!-- 醫師編輯視窗 -->
 <div id="doctorEditModal" style="
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.35);
-  z-index:9999;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(20,55,48,0.38);
+    z-index:9999;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
 ">
 
-  <div style="
-    background:white;
-    width:100%;
-    max-width:620px;
-    border-radius:16px;
-    padding:28px;
-    box-shadow:0 20px 60px rgba(0,0,0,0.18);
-  ">
+    <div style="
+        background:#ffffff;
+        width:min(780px,94vw);
+        max-height:88vh;
+        overflow-y:auto;
+        border-radius:18px;
+        padding:26px 30px;
+        box-shadow:0 24px 70px rgba(0,0,0,0.20);
+        border:1px solid #dce9e4;
+    ">
 
-    <h2 style="margin-top:0;color:#24453d;">
-      編輯醫師資料
-    </h2>
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:20px;
+            padding-bottom:14px;
+            border-bottom:1px solid #e3ece8;
+        ">
+            <div>
+                <h2 style="margin:0;color:#24453d;font-size:24px;">
+                    編輯醫師資料
+                </h2>
+                <div style="margin-top:5px;color:#7b918b;font-size:13px;">
+                    修改完成後請按「儲存變更」
+                </div>
+            </div>
 
-    <input type="hidden" id="editDoctorId">
+            <button type="button"
+                onclick="closeDoctorEditModal()"
+                style="
+                    border:0;
+                    background:#f1f6f4;
+                    color:#527068;
+                    width:36px;
+                    height:36px;
+                    border-radius:50%;
+                    font-size:20px;
+                    cursor:pointer;
+                ">
+                ×
+            </button>
+        </div>
 
-    <label>醫師姓名</label>
-    <input id="editDoctorName" type="text" style="width:100%;padding:12px;margin:6px 0 16px;">
+        <input type="hidden" id="editDoctorId">
 
-    <label>職稱</label>
-    <input id="editDoctorTitle" type="text" style="width:100%;padding:12px;margin:6px 0 16px;">
+        <div style="
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:14px 18px;
+        ">
 
-    <label>專科</label>
-    <input id="editDoctorSpecialty" type="text" style="width:100%;padding:12px;margin:6px 0 16px;">
+            <div>
+                <label style="display:block;margin-bottom:6px;font-weight:600;color:#35564e;">
+                    醫師姓名
+                </label>
+                <input id="editDoctorName" type="text"
+                    style="width:100%;padding:10px 12px;border:1px solid #ccdcd6;border-radius:8px;">
+            </div>
 
-<label>介紹文字</label>
-<textarea id="editDoctorSlogan" rows="3" style="width:100%;padding:12px;margin:6px 0 16px;"></textarea>
+            <div>
+                <label style="display:block;margin-bottom:6px;font-weight:600;color:#35564e;">
+                    職稱
+                </label>
+                <input id="editDoctorTitle" type="text"
+                    style="width:100%;padding:10px 12px;border:1px solid #ccdcd6;border-radius:8px;">
+            </div>
 
-<label>學歷</label>
-<textarea id="editDoctorEducation" rows="3" style="width:100%;padding:12px;margin:6px 0 16px;"></textarea>
+            <div>
+                <label style="display:block;margin-bottom:6px;font-weight:600;color:#35564e;">
+                    專科
+                </label>
+                <input id="editDoctorSpecialty" type="text"
+                    style="width:100%;padding:10px 12px;border:1px solid #ccdcd6;border-radius:8px;">
+            </div>
 
-<label>經歷</label>
-<textarea id="editDoctorExperience" rows="3" style="width:100%;padding:12px;margin:6px 0 16px;"></textarea>
+            <div>
+                <label style="display:block;margin-bottom:6px;font-weight:600;color:#35564e;">
+                    排序
+                </label>
+                <input id="editDoctorSortOrder" type="number"
+                    style="width:100%;padding:10px 12px;border:1px solid #ccdcd6;border-radius:8px;">
+            </div>
 
-<label>專長</label>
-<textarea id="editDoctorExpertise" rows="3" style="width:100%;padding:12px;margin:6px 0 16px;"></textarea>
+        </div>
 
-<label>醫師照片網址</label>
-<input id="editDoctorPhotoUrl" type="text" style="width:100%;padding:12px;margin:6px 0 16px;">
+        <div style="margin-top:14px;">
+            <label style="display:block;margin-bottom:6px;font-weight:600;color:#35564e;">
+                介紹文字
+            </label>
+            <textarea id="editDoctorSlogan" rows="2"
+                style="width:100%;padding:10px 12px;border:1px solid #ccdcd6;border-radius:8px;resize:vertical;"></textarea>
+        </div>
 
-<label>醫師海報網址</label>
-<input id="editDoctorPosterUrl" type="text" style="width:100%;padding:12px;margin:6px 0 16px;">
+        <div style="
+            display:grid;
+            grid-template-columns:1fr 1fr 1fr;
+            gap:14px;
+            margin-top:14px;
+        ">
 
-<label>排序</label>
-<input id="editDoctorSortOrder" type="number" style="width:100%;padding:12px;margin:6px 0 16px;">
+            <div>
+                <label style="display:block;margin-bottom:6px;font-weight:600;color:#35564e;">
+                    學歷
+                </label>
+                <textarea id="editDoctorEducation" rows="4"
+                    style="width:100%;padding:10px 12px;border:1px solid #ccdcd6;border-radius:8px;resize:vertical;"></textarea>
+            </div>
 
-<label style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
-  <input id="editDoctorActive" type="checkbox">
-  在網站上顯示這位醫師
-</label>
-    <div style="display:flex;justify-content:flex-end;gap:10px;">
+            <div>
+                <label style="display:block;margin-bottom:6px;font-weight:600;color:#35564e;">
+                    經歷
+                </label>
+                <textarea id="editDoctorExperience" rows="4"
+                    style="width:100%;padding:10px 12px;border:1px solid #ccdcd6;border-radius:8px;resize:vertical;"></textarea>
+            </div>
 
-<button type="button" onclick="closeDoctorEditModal()" style="
-        padding:10px 20px;
-        background:white;
-        border:1px solid #aaa;
-        border-radius:8px;
-        cursor:pointer;
-      ">
-        取消
-      </button>
+            <div>
+                <label style="display:block;margin-bottom:6px;font-weight:600;color:#35564e;">
+                    專長
+                </label>
+                <textarea id="editDoctorExpertise" rows="4"
+                    style="width:100%;padding:10px 12px;border:1px solid #ccdcd6;border-radius:8px;resize:vertical;"></textarea>
+            </div>
 
-      <button type="button" onclick="saveDoctorEdit()" style="
-        padding:10px 20px;
-        background:#358f7f;
-        color:white;
-        border:0;
-        border-radius:8px;
-        cursor:pointer;
-      ">
-        儲存變更
-      </button>
+        </div>
+
+        <div style="
+            display:grid;
+            grid-template-columns:1fr 1fr;
+            gap:14px 18px;
+            margin-top:14px;
+        ">
+
+            <div>
+                <label style="display:block;margin-bottom:6px;font-weight:600;color:#35564e;">
+                    醫師照片網址
+                </label>
+                <input id="editDoctorPhotoUrl" type="text"
+                    placeholder="例如：assets/doctors/doctor.jpg"
+                    style="width:100%;padding:10px 12px;border:1px solid #ccdcd6;border-radius:8px;">
+            </div>
+
+            <div>
+                <label style="display:block;margin-bottom:6px;font-weight:600;color:#35564e;">
+                    醫師海報網址
+                </label>
+                <input id="editDoctorPosterUrl" type="text"
+                    placeholder="例如：assets/posters/doctor.jpg"
+                    style="width:100%;padding:10px 12px;border:1px solid #ccdcd6;border-radius:8px;">
+            </div>
+
+        </div>
+
+        <label style="
+            display:flex;
+            align-items:center;
+            gap:9px;
+            margin-top:18px;
+            padding:12px 14px;
+            background:#f4f8f6;
+            border-radius:9px;
+            color:#35564e;
+        ">
+            <input id="editDoctorActive" type="checkbox"
+                style="width:18px;height:18px;">
+            在網站上顯示這位醫師
+        </label>
+
+        <div style="
+            display:flex;
+            justify-content:flex-end;
+            gap:10px;
+            margin-top:20px;
+            padding-top:16px;
+            border-top:1px solid #e3ece8;
+        ">
+
+            <button type="button"
+                onclick="closeDoctorEditModal()"
+                style="
+                    padding:10px 22px;
+                    background:white;
+                    color:#527068;
+                    border:1px solid #b9ccc5;
+                    border-radius:8px;
+                    cursor:pointer;
+                ">
+                取消
+            </button>
+
+            <button type="button"
+                onclick="saveDoctorEdit()"
+                style="
+                    padding:10px 26px;
+                    background:#358f7f;
+                    color:white;
+                    border:0;
+                    border-radius:8px;
+                    cursor:pointer;
+                    font-weight:600;
+                ">
+                儲存變更
+            </button>
+
+        </div>
 
     </div>
-
-  </div>
 </div>
 <script>
 
