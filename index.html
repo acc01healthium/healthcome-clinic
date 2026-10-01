@@ -331,7 +331,7 @@ async function loadSiteContent(){try{const {data,error}=await healthcomeSupabase
 const h=content.home;document.querySelector('.welcome-card h2').textContent=h.title;document.querySelector('.welcome-card p').textContent=h.description;
 if(Array.isArray(content.services.items))document.querySelectorAll('.service-grid article').forEach((el,i)=>{const item=content.services.items[i];if(item){el.querySelector('h2').textContent=item.title;el.querySelector('p').textContent=item.description;}});
 renderClinicHours(content.hours);
-const c=content.contact;document.querySelectorAll('a[href^="tel:"]').forEach(a=>{a.textContent=c.phone;a.href='tel:'+c.phone.replace(/[^+0-9]/g,'');});const lineUrl='https://line.me/ti/p/~'+encodeURIComponent(c.line);document.querySelectorAll('a[href^="https://line.me/"]').forEach(a=>{a.href=lineUrl;if(!a.querySelector('img'))a.textContent=c.line;});document.querySelector('.clinic-contact>p:nth-of-type(2)').textContent=c.address;document.querySelector('#contact .row:last-child span').textContent=c.address;
+const c=content.contact;document.querySelectorAll('a[href^="tel:"]').forEach(a=>{a.textContent=c.phone;a.href='tel:'+c.phone.replace(/[^+0-9]/g,'');});const lineUrl='https://line.me/ti/p/~'+encodeURIComponent(c.line);document.querySelectorAll('a[href^="https://line.me/"]:not(.line-link)').forEach(a=>{a.href=lineUrl;if(!a.querySelector('img'))a.textContent=c.line;});document.querySelector('.clinic-contact>p:nth-of-type(2)').textContent=c.address;document.querySelector('#contact .row:last-child span').textContent=c.address;
 // QR code remains the original account unless a verified replacement is supplied.
 
 renderClinicNews(content.news.items||[]);
