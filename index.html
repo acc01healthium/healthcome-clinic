@@ -8,13 +8,13 @@
 .service-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:18px 30px}.service-grid article{text-align:center;padding:18px 8px;background:linear-gradient(120deg,#edf6ef,#f4f8f5);border-radius:16px}.service-grid span{font-size:40px;line-height:1;color:#329d72}.service-grid h2{font-size:23px;margin:12px 0 6px;font-weight:500}.service-grid p{font-size:16px;margin:0;color:#52645c}@media(max-width:760px){.service-grid{grid-template-columns:repeat(2,1fr);margin:18px;gap:12px}.service-grid h2{font-size:21px}}
 .welcome-card h2,.welcome-card p,#newsItems p{white-space:pre-line}#newsItems{display:grid;gap:18px}#newsItems article{padding:22px;background:#f3f8f5;border-radius:14px}#newsItems p{line-height:1.8}.section[hidden]{display:none}
 .hours-table .session-time{font-size:13px;font-weight:400}.hours-table small{display:block;font-size:12px;color:#17674f;line-height:1.5}.hours-table th:first-child{min-width:135px}.hours-table tfoot td{white-space:normal;background:#edf6f1;text-align:left;padding:12px 14px;font-size:14px;color:#17674f}.hours-table td:nth-child(2){font-size:inherit}.hours-table th,.hours-table td{border-color:#8ab29e}.hours-table thead th{font-size:18px}.hours-table thead th:first-child{font-size:17px}
-</style></head><body>
+</style><style>.hours-table .weekend-afternoon{position:relative;padding-bottom:38px}.hours-table .weekend-hours-note{position:absolute;left:0;bottom:0;width:calc(200% + 1px);box-sizing:border-box;background:#31594b;color:#fff;font-size:12px;line-height:24px;height:24px;z-index:1;text-align:center;white-space:nowrap}</style></head><body>
 <main class="hero" id="top">
 <header class="site-header"><a class="brand" href="#top">✿ 立康診所</a><nav aria-label="主要導覽"><a href="#top">首頁</a><a href="#top">關於我們</a><a href="#top">醫療服務</a><a href="#team">醫師團隊</a><button type="button" onclick="openHoursModal()">門診時間</button><a href="#news">最新消息</a><a href="#contact">交通資訊</a><button type="button" id="recruitTrigger" onclick="openRecruitModal()">徵才實料</button><a class="booking-link" href="#contact">掛號資訊</a></nav></header>
 <div class="original-art clinic-hero"><img src="assets/homepage.png" alt="立康診所：全人、全家、全方位健康照護"></div>
 <section class="welcome-card"><img src="leaves-card.jpg" alt=""><div><h2>用心傾聽・用愛照顧<br>陪伴您走過每一個健康階段</h2><p>立康診所提供整合性的醫療服務，<br>從預防、治療到長期追蹤，<br>與您一起打造更健康、更安心的生活。</p></div></section>
 <section class="service-grid" aria-label="醫療服務"><article><span aria-hidden="true">⌂</span><h2>全人照顧</h2><p>常見疾病診療</p></article><article><span aria-hidden="true">✚</span><h2>點滴療法</h2><p>預防保健服務</p></article><article><span aria-hidden="true">▤</span><h2>健康檢查</h2><p>早期發現・早期治療</p></article><article><span aria-hidden="true">♡</span><h2>慢性病管理</h2><p>長期追蹤・個人照護</p></article></section>
-<section class="clinic-details"><div class="schedule-card"><h2>◷ 門診時間</h2><div class="table-scroll"><table class="hours-table"><thead><tr><th scope="col">門診時間表</th><th scope="col">一</th><th scope="col">二</th><th scope="col">三</th><th scope="col">四</th><th scope="col">五</th><th scope="col">六</th><th scope="col">日</th></tr></thead><tbody><tr><th scope="row">早診<br><span class="session-time">07:30–12:00</span></th><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td></tr><tr><th scope="row">午診<br><span class="session-time">14:30–17:30</span></th><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available">●<small>至18:00</small></td><td class="available">●<small>至18:00</small></td></tr><tr><th scope="row">晚診<br><span class="session-time">18:00–21:00</span></th><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="closed">休診</td><td class="closed">休診</td></tr></tbody><tfoot><tr><td colspan="8">週六、週日午診看到18:00；晚診休診。</td></tr></tfoot></table></div></div><div class="clinic-contact" id="clinicContact"><h2>聯絡我們</h2><p class="contact-phone"><a href="tel:0226863898">02-26863898</a></p><p>新北市樹林區中山路一段118、120號</p><p><strong>LINE：</strong><a href="https://line.me/ti/p/~@106tdddj" target="_blank" rel="noopener noreferrer">@106tdddj</a></p><a href="#contact">交通資訊</a></div></section>
+<section class="clinic-details"><div class="schedule-card"><h2>◷ 門診時間</h2><div class="table-scroll"><table class="hours-table"><thead><tr><th scope="col">門診時間表</th><th scope="col">一</th><th scope="col">二</th><th scope="col">三</th><th scope="col">四</th><th scope="col">五</th><th scope="col">六</th><th scope="col">日</th></tr></thead><tbody><tr><th scope="row">早診<br><span class="session-time">07:30–12:00</span></th><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td></tr><tr><th scope="row">午診<br><span class="session-time">14:30–17:30</span></th><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available weekend-afternoon">●<small class="weekend-hours-note">週末下午到18點</small></td><td class="available weekend-afternoon">●</td></tr><tr><th scope="row">晚診<br><span class="session-time">18:00–21:00</span></th><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="closed">休診</td><td class="closed">休診</td></tr></tbody><tfoot><tr><td colspan="8">週六、週日午診看到18:00；晚診休診。</td></tr></tfoot></table></div></div><div class="clinic-contact" id="clinicContact"><h2>聯絡我們</h2><p class="contact-phone"><a href="tel:0226863898">02-26863898</a></p><p>新北市樹林區中山路一段118、120號</p><p><strong>LINE：</strong><a href="https://line.me/ti/p/~@106tdddj" target="_blank" rel="noopener noreferrer">@106tdddj</a></p><a href="#contact">交通資訊</a></div></section>
 <img class="clinic-banner" src="leaves-banner.jpg" alt="健康的每一步，立康與您同行"></main>
 <section class="section" id="news" hidden><h2 class="section-title">最新消息</h2><div id="newsItems"></div></section><section class="section" id="team">
   <h2 class="section-title">專業醫師團隊</h2>
@@ -102,7 +102,7 @@ function bindDoctorClicks() {
 
 loadDoctors();
 </script>
-<section class="contact" id="contact"><div class="contactbox"><div><h2>聯絡資訊</h2><div class="row"><strong>電話</strong><a href="tel:0226863898">02-26863898</a></div><div class="row"><strong>LINE ID</strong><a href="https://line.me/ti/p/~@106tdddj" target="_blank" rel="noopener noreferrer">@106tdddj</a></div><div class="row"><strong>地址</strong><span>新北市樹林區中山路一段118、120號</span></div></div></div></section>
+<section class="contact" id="contact"><div class="contactbox"><div><h2>交通資訊</h2><div class="row"><strong>電話</strong><a href="tel:0226863898">02-26863898</a></div><div class="row"><strong>LINE ID</strong><a href="https://line.me/ti/p/~@106tdddj" target="_blank" rel="noopener noreferrer">@106tdddj</a></div><div class="row"><strong>地址</strong><span>新北市樹林區中山路一段118、120號</span></div></div></div></section>
 <div class="modal" id="modal" aria-hidden="true"><button class="close" aria-label="關閉">×</button><img id="modalImg" alt="醫師完整介紹海報"></div><footer class="footer">© 2026 立康診所 HealthCome Clinic</footer>
 <script>const m=document.getElementById('modal'),mi=document.getElementById('modalImg');document.querySelectorAll('.doctor').forEach(x=>x.onclick=()=>{mi.src=x.dataset.img;m.classList.add('open');m.setAttribute('aria-hidden','false')});function closeM(){m.classList.remove('open');m.setAttribute('aria-hidden','true')}document.querySelector('.close').onclick=closeM;m.onclick=e=>{if(e.target===m)closeM()};document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
 </script>
@@ -155,7 +155,7 @@ loadDoctors();
       margin:0 0 24px;
     ">立康診所 HealthCome Clinic</p>
 
-<div class="table-scroll modal-hours"><table class="hours-table"><thead><tr><th scope="col">門診時間表</th><th scope="col">一</th><th scope="col">二</th><th scope="col">三</th><th scope="col">四</th><th scope="col">五</th><th scope="col">六</th><th scope="col">日</th></tr></thead><tbody><tr><th scope="row">早診<br><span class="session-time">07:30–12:00</span></th><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td></tr><tr><th scope="row">午診<br><span class="session-time">14:30–17:30</span></th><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available">●<small>至18:00</small></td><td class="available">●<small>至18:00</small></td></tr><tr><th scope="row">晚診<br><span class="session-time">18:00–21:00</span></th><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="closed">休診</td><td class="closed">休診</td></tr></tbody><tfoot><tr><td colspan="8">週六、週日午診看到18:00；晚診休診。</td></tr></tfoot></table></div>
+<div class="table-scroll modal-hours"><table class="hours-table"><thead><tr><th scope="col">門診時間表</th><th scope="col">一</th><th scope="col">二</th><th scope="col">三</th><th scope="col">四</th><th scope="col">五</th><th scope="col">六</th><th scope="col">日</th></tr></thead><tbody><tr><th scope="row">早診<br><span class="session-time">07:30–12:00</span></th><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td></tr><tr><th scope="row">午診<br><span class="session-time">14:30–17:30</span></th><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available weekend-afternoon">●<small class="weekend-hours-note">週末下午到18點</small></td><td class="available weekend-afternoon">●</td></tr><tr><th scope="row">晚診<br><span class="session-time">18:00–21:00</span></th><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="available"><span aria-label="有門診">●</span></td><td class="closed">休診</td><td class="closed">休診</td></tr></tbody><tfoot><tr><td colspan="8">週六、週日午診看到18:00；晚診休診。</td></tr></tfoot></table></div>
 
     <p style="
       margin:18px 0 0;
@@ -326,7 +326,7 @@ document.getElementById('recruitModal').addEventListener('click', function(e) {
 });
 </script>
 <script>document.addEventListener('keydown',function(e){const d=document.getElementById('recruitModal');if(d.getAttribute('aria-hidden')!=='false')return;if(e.key==='Escape')closeRecruitModal();if(e.key==='Tab'){const items=[...d.querySelectorAll('button,a[href]')];const first=items[0],last=items[items.length-1];if(e.shiftKey&&(document.activeElement===first||document.activeElement===d.querySelector('.recruit-panel'))){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}});</script><script src="news-front.js"></script><script>
-function renderClinicHours(hours){document.querySelectorAll('.hours-table').forEach(table=>{[...table.tBodies[0].rows].forEach((row,i)=>{const header=row.cells[0];header.replaceChildren();header.append(document.createTextNode(['早診','午診','晚診'][i]),document.createElement('br'));const time=document.createElement('span');time.className='session-time';time.textContent=[hours.morning,hours.afternoon,hours.evening][i];header.append(time);for(let day=0;day<7;day++){const cell=row.cells[day+1],closed=i===2&&day>=5&&hours.weekendEveningClosed;cell.className=closed?'closed':'available';cell.replaceChildren();if(closed)cell.textContent='休診';else{const dot=document.createElement('span');dot.textContent='●';dot.setAttribute('aria-label','有門診');cell.append(dot);if(i===1&&day>=5&&hours.weekendAfternoon&&hours.weekendAfternoon!==hours.afternoon){const note=document.createElement('small');note.textContent='至'+hours.weekendAfternoon.split(/[–-]/)[1];cell.append(note);}}}});table.tFoot.rows[0].cells[0].textContent=hours.note||'';});}
+function renderClinicHours(hours){document.querySelectorAll('.hours-table').forEach(table=>{[...table.tBodies[0].rows].forEach((row,i)=>{const header=row.cells[0];header.replaceChildren();header.append(document.createTextNode(['早診','午診','晚診'][i]),document.createElement('br'));const time=document.createElement('span');time.className='session-time';time.textContent=[hours.morning,hours.afternoon,hours.evening][i];header.append(time);for(let day=0;day<7;day++){const cell=row.cells[day+1],closed=i===2&&day>=5&&hours.weekendEveningClosed;cell.className=closed?'closed':'available';cell.replaceChildren();if(closed)cell.textContent='休診';else{const dot=document.createElement('span');dot.textContent='●';dot.setAttribute('aria-label','有門診');cell.append(dot);if(i===1&&day>=5&&hours.weekendAfternoon&&hours.weekendAfternoon!==hours.afternoon){const note=document.createElement('small');if(day===5){note.className='weekend-hours-note';const end=hours.weekendAfternoon.split(/[–-]/)[1];note.textContent='週末下午到'+(end==='18:00'?'18點':end);cell.append(note);}cell.classList.add('weekend-afternoon');}}}});table.tFoot.rows[0].cells[0].textContent=hours.note||'';});}
 async function loadSiteContent(){try{const {data,error}=await healthcomeSupabase.from('healthcome_site_content').select('key,value');if(error){console.info('使用網站預設內容');return;}const content=clinicClone(CLINIC_DEFAULTS);for(const row of data||[])if(row.key in content&&row.value&&typeof row.value==='object')content[row.key]={...content[row.key],...row.value};
 const h=content.home;document.querySelector('.welcome-card h2').textContent=h.title;document.querySelector('.welcome-card p').textContent=h.description;
 if(Array.isArray(content.services.items))document.querySelectorAll('.service-grid article').forEach((el,i)=>{const item=content.services.items[i];if(item){el.querySelector('h2').textContent=item.title;el.querySelector('p').textContent=item.description;}});
@@ -337,138 +337,5 @@ if(c.line!==CLINIC_DEFAULTS.contact.line){const qr=document.querySelector('.line
 renderClinicNews(content.news.items||[]);
 }catch(error){console.info('內容連線暫時不可用，使用預設內容。');}}
 loadSiteContent();
-</script>
-<!-- ===== 立康診所：重設密碼視窗 ===== -->
-<div id="resetPasswordModal" style="
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(36,69,61,.55);
-  z-index:99999;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
-">
-  <div style="
-    width:100%;
-    max-width:430px;
-    background:#fff;
-    border-radius:20px;
-    padding:32px;
-    box-shadow:0 20px 60px rgba(0,0,0,.25);
-  ">
-
-    <h2 style="color:#17674f;margin:0 0 8px;">
-      設定新密碼
-    </h2>
-
-    <p style="color:#71827d;margin:0 0 22px;">
-      請輸入您的新密碼
-    </p>
-
-    <input
-      id="newPassword"
-      type="password"
-      placeholder="輸入新密碼"
-      style="
-        width:100%;
-        box-sizing:border-box;
-        padding:13px;
-        margin-bottom:12px;
-        border:1px solid #ccdcd6;
-        border-radius:9px;
-        font-size:16px;
-      "
-    >
-
-    <input
-      id="confirmPassword"
-      type="password"
-      placeholder="再次輸入新密碼"
-      style="
-        width:100%;
-        box-sizing:border-box;
-        padding:13px;
-        margin-bottom:18px;
-        border:1px solid #ccdcd6;
-        border-radius:9px;
-        font-size:16px;
-      "
-    >
-
-    <button onclick="saveNewPassword()" style="
-      width:100%;
-      border:0;
-      border-radius:10px;
-      padding:13px;
-      background:#2e9b70;
-      color:white;
-      font-size:16px;
-      font-weight:700;
-      cursor:pointer;
-    ">
-      儲存新密碼
-    </button>
-
-    <p id="resetPasswordMessage"
-       style="margin:15px 0 0;text-align:center;color:#71827d;">
-    </p>
-
-  </div>
-</div>
-
-<script>
-async function saveNewPassword() {
-
-  const password =
-    document.getElementById('newPassword').value;
-
-  const confirmPassword =
-    document.getElementById('confirmPassword').value;
-
-  const message =
-    document.getElementById('resetPasswordMessage');
-
-  if (password.length < 6) {
-    message.textContent = '密碼至少需要 6 個字元';
-    return;
-  }
-
-  if (password !== confirmPassword) {
-    message.textContent = '兩次輸入的密碼不一致';
-    return;
-  }
-
-  message.textContent = '正在更新密碼...';
-
-  const { error } =
-    await healthcomeSupabase.auth.updateUser({
-      password: password
-    });
-
-  if (error) {
-    message.textContent = '設定失敗：' + error.message;
-    return;
-  }
-
-  message.style.color = '#17674f';
-  message.textContent = '密碼設定成功！';
-
-  setTimeout(() => {
-    document.getElementById('resetPasswordModal').style.display = 'none';
-  }, 1500);
-}
-
-
-/* 偵測 Supabase 密碼重設狀態 */
-healthcomeSupabase.auth.onAuthStateChange((event, session) => {
-
-  if (event === 'PASSWORD_RECOVERY') {
-    document.getElementById('resetPasswordModal').style.display = 'flex';
-  }
-
-});
-</script>
-<!-- ===== 重設密碼功能結束 ===== -->
-</body>
+</script></body>
 </html>
