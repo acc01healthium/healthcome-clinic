@@ -164,7 +164,7 @@
 ">
   忘記密碼？
 </button>
-      <div id="message"></div>
+      <div id="message" role="status" aria-live="polite"></div>
 
     </form>
 
@@ -184,7 +184,7 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
   'sb_publishable_207N7AlFmADOQAdTxcahEg_iVAdw4KU';
 
-const db = window.supabase.createClient(
+const db = window.supabase?.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
@@ -214,6 +214,8 @@ forgotPassword.addEventListener('click', async function() {
   forgotPassword.disabled = true;
   forgotPassword.textContent = '寄送中...';
 
+  try {
+  if(!db)throw new Error('登入服務未載入，請重新整理後重試。');
   const { error } = await db.auth.resetPasswordForEmail(
     email,
     {
@@ -238,7 +240,7 @@ forgotPassword.addEventListener('click', async function() {
 
   forgotPassword.disabled = false;
   forgotPassword.textContent = '忘記密碼？';
-
+  }catch(error){message.textContent='寄送失敗：'+error.message;message.className='error';forgotPassword.disabled=false;forgotPassword.textContent='忘記密碼？';}
 });
 
 loginForm.addEventListener('submit', async function(e) {
@@ -257,6 +259,8 @@ loginForm.addEventListener('submit', async function(e) {
   const password =
     document.getElementById('password').value;
 
+  try {
+  if(!db)throw new Error('登入服務未載入，請重新整理後重試。');
   const { data, error } =
     await db.auth.signInWithPassword({
       email: email,
@@ -276,13 +280,14 @@ loginForm.addEventListener('submit', async function(e) {
     return;
   }
 
+  if(data.user?.email!=='acc.01.healthium@gmail.com'){await db.auth.signOut();throw new Error('此帳號沒有管理權限。');}
   message.textContent = '登入成功';
   message.className = 'success';
 
   setTimeout(function() {
     window.location.href = 'dashboard.html';
   }, 700);
-
+  }catch(error){message.textContent='登入失敗：'+error.message;message.className='error';loginButton.disabled=false;loginButton.textContent='登入管理後台';}
 });
 
 </script>

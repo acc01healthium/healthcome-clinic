@@ -6,7 +6,7 @@
 
   <title>立康診所｜網站管理後台</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="site-content.js"></script>
 
   <style>
     * {
@@ -108,7 +108,9 @@
     #dashboard {
       display: none;
     }
-  </style>
+  .doctor-toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:20px 0}.doctor-toolbar input{padding:12px;border:1px solid #ccdcd6;border-radius:8px;font-size:16px}.doctor-toolbar button{padding:12px;border:1px solid #358f7f;border-radius:8px;background:white;color:#358f7f;cursor:pointer}input,textarea,button{font-family:inherit;font-size:16px}button:disabled{opacity:.6;cursor:wait}#doctorList>div[hidden]{display:none}@media(max-width:760px){header{height:auto;min-height:72px;padding:18px;gap:16px}.brand{font-size:19px;letter-spacing:1px}.layout{display:block}aside{width:100%;display:flex;overflow:auto;padding:10px}aside button{width:auto;white-space:nowrap;flex-shrink:0;margin:0}main{padding:20px}#doctorEditModal>div{padding:22px 18px!important}#doctorEditModal>div>div[style*="display:grid"]{grid-template-columns:1fr!important}.welcome{padding:22px}}
+#contentFields{max-width:760px}#contentFields>label,#contentFields fieldset>label{display:block;margin:18px 0 8px;font-weight:600}#contentFields input:not([type=checkbox]),#contentFields textarea{width:100%;padding:12px;border:1px solid #ccdcd6;border-radius:8px}#contentFields textarea{resize:vertical;line-height:1.7}#contentFields fieldset{border:1px solid #e0eae5;border-radius:12px;padding:18px;margin:18px 0}#contentFields .check-label{display:flex;align-items:center;gap:10px}.content-actions{display:flex;gap:20px;align-items:center;margin-top:24px}.content-actions button{background:#358f7f;color:white;border:0;padding:12px 20px;border-radius:8px;cursor:pointer}.content-actions a{color:#358f7f}#contentNotice{line-height:1.7}#contentStatus{white-space:pre-wrap}
+</style>
 </head>
 
 <body>
@@ -132,15 +134,15 @@
   <div class="layout">
 
     <aside>
-      <button class="active">首頁內容</button>
+      <button class="active" data-panel="home">首頁內容</button>
       <button id="doctorMenuButton">醫師團隊</button>
-      <button>醫療服務</button>
-      <button>門診時間</button>
-      <button>最新消息</button>
-      <button>基本設定</button>
+      <button data-panel="services">醫療服務</button>
+      <button data-panel="hours">門診時間</button>
+      <button data-panel="news">最新消息</button>
+      <button data-panel="contact">基本設定</button>
     </aside>
 
-<main>
+<main><section id="contentPanel" class="welcome" hidden><h1 id="contentTitle"></h1><p id="contentNotice" role="status"></p><form id="contentForm"><div id="contentFields"></div><p id="contentStatus" role="status" aria-live="polite"></p><div class="content-actions"><button id="saveContentButton" type="submit">儲存並更新網站</button><a href="index.html" target="_blank" rel="noopener">查看網站</a></div></form></section>
 
   <div class="welcome" id="welcomePanel">
     <h1>歡迎進入立康診所網站管理後台</h1>
@@ -156,7 +158,7 @@
     <h1>醫師團隊管理</h1>
     <p>在這裡管理立康診所的醫師資料。</p>
 
-    <div id="doctorList">
+    <div class="doctor-toolbar"><label for="doctorSearch">搜尋醫師</label><input id="doctorSearch" placeholder="姓名、專科或職稱"><button id="refreshDoctors" type="button">重新整理</button></div><p id="doctorSummary" role="status"></p><p id="dashboardMessage" role="status" aria-live="polite"></p><div id="doctorList">
       正在讀取醫師資料...
     </div>
   </div>
@@ -168,7 +170,7 @@
 </div>
 
 <!-- 醫師編輯視窗 -->
-<div id="doctorEditModal" style="
+<div id="doctorEditModal" role="dialog" aria-modal="true" aria-label="編輯醫師資料" style="
     display:none;
     position:fixed;
     inset:0;
@@ -223,7 +225,7 @@
             </button>
         </div>
 
-        <input type="hidden" id="editDoctorId">
+        <p id="editStatus" role="status" aria-live="polite"></p><input type="hidden" id="editDoctorId">
 
         <div style="
             display:grid;
@@ -387,7 +389,7 @@
             </button>
 
             <button type="button"
-                onclick="saveDoctorEdit()"
+                id="saveDoctorButton" onclick="saveDoctorEdit()"
                 style="
                     padding:10px 26px;
                     background:#358f7f;
@@ -412,7 +414,7 @@ const SUPABASE_URL =
 const SUPABASE_KEY =
   'sb_publishable_207N7AlFmADOQAdTxcahEg_iVAdw4KU';
 
-const db = window.supabase.createClient(
+const db = window.supabase?.createClient(
   SUPABASE_URL,
   SUPABASE_KEY
 );
@@ -420,9 +422,9 @@ const db = window.supabase.createClient(
 
 async function checkLogin() {
 
-  const {
-    data: { session }
-  } = await db.auth.getSession();
+  if (!db) throw new Error('登入服務載入失敗，請重新整理。');
+  const { data: { session }, error: sessionError } = await db.auth.getSession();
+  if (sessionError) throw sessionError;
 
   if (!session) {
     window.location.href = 'admin.html';
@@ -465,7 +467,9 @@ const doctorPanel = document.getElementById('doctorPanel');
 const doctorList = document.getElementById('doctorList');
 
 doctorMenuButton.addEventListener('click', async function () {
+  if(contentDirty&&!confirm('尚有未儲存的修改，確定離開嗎？'))return;contentDirty=false;
 
+  document.getElementById('contentPanel').hidden=true;document.querySelectorAll('aside button').forEach(b=>b.classList.toggle('active',b===doctorMenuButton));
   welcomePanel.style.display = 'none';
   doctorPanel.style.display = 'block';
 
@@ -478,7 +482,7 @@ doctorMenuButton.addEventListener('click', async function () {
 
   if (error) {
     doctorList.innerHTML =
-      '<p style="color:#d9534f;">讀取失敗：' + error.message + '</p>';
+      '<p style="color:#d9534f;">讀取失敗：' + escapeHtml(error.message) + '</p>';
     return;
   }
 
@@ -487,6 +491,8 @@ doctorMenuButton.addEventListener('click', async function () {
     return;
   }
 
+  cachedDoctors=doctors;
+  document.getElementById('doctorSummary').textContent='共 '+doctors.length+' 位醫師，'+doctors.filter(d=>d.is_active).length+' 位顯示中。';
   doctorList.innerHTML = doctors.map(function (doctor) {
 
     return `
@@ -506,28 +512,28 @@ doctorMenuButton.addEventListener('click', async function () {
 
           <div>
             <h3 style="margin:0 0 8px 0;">
-              ${doctor.name || ''}
+              ${escapeHtml(doctor.name || '')}
               <span style="
                 font-size:14px;
                 font-weight:normal;
                 color:#718078;
               ">
-                ${doctor.title || ''}
+                ${escapeHtml(doctor.title || '')}
               </span>
             </h3>
 
             <div style="color:#358f7f;font-weight:600;">
-              ${doctor.specialty || ''}
+              ${escapeHtml(doctor.specialty || '')}
             </div>
 
             <div style="margin-top:6px;color:#6c7772;">
-              ${doctor.slogan || ''}
+              ${escapeHtml(doctor.slogan || '')}
             </div>
           </div>
 
           <div style="text-align:right;">
           <button
-  onclick="editDoctor(${doctor.id})"
+  data-doctor-id="${escapeHtml(doctor.id)}"
   style="
     padding:6px 14px;
     margin-bottom:8px;
@@ -542,7 +548,7 @@ doctorMenuButton.addEventListener('click', async function () {
 </button>
 <br>
             <div style="font-size:13px;color:#8a9690;">
-              排序 ${doctor.sort_order || ''}
+              排序 ${doctor.sort_order ?? 0}
             </div>
 
             <div style="
@@ -559,7 +565,8 @@ doctorMenuButton.addEventListener('click', async function () {
     `;
 
   }).join('');
-
+  doctorList.querySelectorAll('[data-doctor-id]').forEach(button=>button.addEventListener('click',()=>editDoctor(button.dataset.doctorId)));
+  filterDoctors();
 });
 async function editDoctor(id) {
 
@@ -574,6 +581,7 @@ async function editDoctor(id) {
     return;
   }
 
+  for (const kind of ['Photo','Poster']) {document.getElementById('editDoctor'+kind+'File').value='';renderImagePreview(kind,doctor[kind==='Photo'?'photo_url':'poster_url']);}
   document.getElementById('editDoctorId').value = doctor.id;
   document.getElementById('editDoctorName').value = doctor.name || '';
   document.getElementById('editDoctorTitle').value = doctor.title || '';
@@ -587,18 +595,22 @@ async function editDoctor(id) {
   document.getElementById('editDoctorSortOrder').value = doctor.sort_order || '';
   document.getElementById('editDoctorActive').checked = doctor.is_active !== false;
 
-  document.getElementById('doctorEditModal').style.display = 'flex';
+  dirtyDoctor=false;setEditStatus('');document.getElementById('doctorEditModal').style.display='flex';document.getElementById('editDoctorName').focus();
 }
 
 
-function closeDoctorEditModal() {
-  document.getElementById('doctorEditModal').style.display = 'none';
+function closeDoctorEditModal(force=false) {
+  if(document.getElementById('saveDoctorButton').disabled&&!force)return;
+  if(dirtyDoctor && !confirm('尚有未儲存的修改，確定要關閉嗎？'))return;
+  document.getElementById('doctorEditModal').style.display='none';dirtyDoctor=false;
 }
 
 
 async function uploadDoctorImage(file, folder) {
   if (!file) return null;
 
+  if (!['image/jpeg','image/png','image/webp'].includes(file.type)) throw new Error('圖片需為 JPG、PNG 或 WebP 格式。');
+  if (file.size > 5*1024*1024) throw new Error('圖片不可超過 5 MB。');
   // 檔名副檔名
   const extension = file.name.split('.').pop().toLowerCase();
 
@@ -631,6 +643,13 @@ async function uploadDoctorImage(file, folder) {
 
 
 async function saveDoctorEdit() {
+  const saveButton=document.getElementById('saveDoctorButton');
+  if(saveButton.disabled)return;
+  const name=document.getElementById('editDoctorName').value.trim();
+  const sort=Number(document.getElementById('editDoctorSortOrder').value);
+  if(!name){setEditStatus('請輸入醫師姓名。',true);document.getElementById('editDoctorName').focus();return;}
+  if(!Number.isSafeInteger(sort)||sort<0){setEditStatus('排序請輸入 0 或以上的整數。',true);return;}
+  saveButton.disabled=true;saveButton.textContent='儲存中…';setEditStatus('正在儲存資料與圖片…');
 
   const id = document.getElementById('editDoctorId').value;
 
@@ -685,18 +704,16 @@ async function saveDoctorEdit() {
         document.getElementById('editDoctorActive').checked
     };
 
-    const { error } = await db
-      .from('healthcome_doctors')
-      .update(updateData)
-      .eq('id', id);
+    const { data: savedDoctor, error } = await db.from('healthcome_doctors').update(updateData).eq('id',id).select('id').single();
+    if(!error && !savedDoctor) throw new Error('資料未更新，請確認管理員的資料寫入權限。');
 
     if (error) {
       throw error;
     }
 
-    alert('醫師資料已儲存');
+    document.getElementById('dashboardMessage').textContent='醫師資料已成功儲存。';dirtyDoctor=false;
 
-    closeDoctorEditModal();
+    closeDoctorEditModal(true);
 
     doctorMenuButton.click();
 
@@ -704,11 +721,38 @@ async function saveDoctorEdit() {
 
     console.error(error);
 
-    alert('儲存失敗：' + error.message);
+    setEditStatus('儲存失敗：'+error.message,true);
 
-  }
+  } finally {saveButton.disabled=false;saveButton.textContent='儲存變更';}
 }
-checkLogin();
+
+let cachedDoctors=[],dirtyDoctor=false;const previewObjectUrls={};
+function escapeHtml(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function setEditStatus(message,error=false){const el=document.getElementById('editStatus');el.textContent=message;el.style.color=error?'#b13b3b':'#358f7f';}
+function renderImagePreview(kind,url){const el=document.getElementById('editDoctor'+kind+'Preview');el.replaceChildren();if(!url)return;try{const u=new URL(url,location.href);if(!['https:','http:','blob:'].includes(u.protocol))return;}catch{return;}const img=document.createElement('img');img.src=url;img.alt=kind==='Photo'?'醫師照片預覽':'醫師海報預覽';img.style.cssText='max-width:100%;max-height:220px;object-fit:contain;border-radius:8px';el.append(img);}
+function filterDoctors(){const q=document.getElementById('doctorSearch').value.trim().toLowerCase();[...doctorList.children].forEach((el,i)=>{const d=cachedDoctors[i];if(d)el.hidden=!([d.name,d.title,d.specialty].join(' ').toLowerCase().includes(q));});}
+document.getElementById('doctorSearch').addEventListener('input',filterDoctors);
+document.getElementById('refreshDoctors').addEventListener('click',()=>doctorMenuButton.click());
+document.getElementById('doctorEditModal').addEventListener('input',()=>dirtyDoctor=true);
+for(const kind of ['Photo','Poster'])document.getElementById('editDoctor'+kind+'File').addEventListener('change',e=>{const file=e.target.files[0];if(previewObjectUrls[kind])URL.revokeObjectURL(previewObjectUrls[kind]);if(!file){renderImagePreview(kind,document.getElementById('editDoctor'+kind+'Url').value);return;}if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>5*1024*1024){e.target.value='';setEditStatus('請選擇 5 MB 以內的 JPG、PNG 或 WebP 圖片。',true);renderImagePreview(kind,document.getElementById('editDoctor'+kind+'Url').value);return;}previewObjectUrls[kind]=URL.createObjectURL(file);renderImagePreview(kind,previewObjectUrls[kind]);});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&document.getElementById('doctorEditModal').style.display==='flex')closeDoctorEditModal();});
+window.addEventListener('beforeunload',e=>{if(dirtyDoctor){e.preventDefault();e.returnValue='';}});
+document.querySelectorAll('#doctorEditModal label').forEach(label=>{const input=label.querySelector('input,textarea')||label.parentElement.querySelector('input:not([type=hidden]),textarea');if(input)label.htmlFor=input.id;});
+
+
+const sectionNames={home:'首頁內容',services:'醫療服務',hours:'門診時間',news:'最新消息',contact:'基本設定'};
+let selectedSection='home',contentValue={},contentDirty=false;
+function field(label,id,value,textarea=false){return '<label for="'+id+'">'+escapeHtml(label)+'</label>'+(textarea?'<textarea rows="4" id="'+id+'">'+escapeHtml(value)+'</textarea>':'<input id="'+id+'" value="'+escapeHtml(value)+'">');}
+async function showContent(section){if(contentDirty&&!confirm('尚有未儲存的修改，確定離開嗎？'))return;contentDirty=false;selectedSection=section;document.querySelectorAll('aside button').forEach(b=>b.classList.toggle('active',b.dataset.panel===section));welcomePanel.style.display='none';doctorPanel.style.display='none';document.getElementById('contentPanel').hidden=false;document.getElementById('contentTitle').textContent=sectionNames[section];document.getElementById('contentStatus').textContent='';const notice=document.getElementById('contentNotice');notice.textContent='正在讀取…';document.getElementById('saveContentButton').disabled=true;
+try{const {data,error}=await db.from('healthcome_site_content').select('value').eq('key',section).maybeSingle();if(error)throw error;contentValue=clinicClone(data?.value||CLINIC_DEFAULTS[section]);notice.textContent='儲存成功後，訪客重新整理網站即可看到更新。';renderContent();document.getElementById('saveContentButton').disabled=false;}catch(error){contentValue=clinicClone(CLINIC_DEFAULTS[section]);renderContent();notice.textContent='內容管理資料庫尚未連接或無讀取權限。請完成資料庫設定後重新整理；目前顯示預設內容，尚無法儲存。';}}
+function renderContent(){const v=contentValue;let html='';if(selectedSection==='home')html=field('主標題','contentTitleField',v.title,true)+field('介紹文字','contentDescription',v.description,true);if(selectedSection==='contact')html=field('電話','contentPhone',v.phone)+field('LINE 帳號','contentLine',v.line)+field('地址','contentAddress',v.address);if(selectedSection==='hours')html=field('早診','contentMorning',v.morning)+field('午診','contentAfternoon',v.afternoon)+field('晚診','contentEvening',v.evening)+'<label class="check-label"><input id="contentWeekend" type="checkbox" '+(v.weekendEveningClosed?'checked':'')+'>週六、週日晚診休診</label>';if(selectedSection==='services')html=v.items.map((item,i)=>'<fieldset><legend>服務 '+(i+1)+'</legend>'+field('名稱','serviceTitle'+i,item.title)+field('說明','serviceDescription'+i,item.description)+'</fieldset>').join('');if(selectedSection==='news')html='<p>每則消息填寫標題與內容，留空的消息不會顯示。</p>'+Array.from({length:3},(_,i)=>'<fieldset><legend>消息 '+(i+1)+'</legend>'+field('標題','newsTitle'+i,v.items[i]?.title||'')+field('內容','newsBody'+i,v.items[i]?.body||'',true)+'</fieldset>').join('');document.getElementById('contentFields').innerHTML=html;}
+function readContent(){const val=id=>document.getElementById(id).value.trim();switch(selectedSection){case 'home':return {title:val('contentTitleField'),description:val('contentDescription')};case 'contact':return {phone:val('contentPhone'),line:val('contentLine'),address:val('contentAddress')};case 'hours':return {morning:val('contentMorning'),afternoon:val('contentAfternoon'),evening:val('contentEvening'),weekendEveningClosed:document.getElementById('contentWeekend').checked};case 'services':return {items:Array.from({length:4},(_,i)=>({title:val('serviceTitle'+i),description:val('serviceDescription'+i)}))};case 'news':return {items:Array.from({length:3},(_,i)=>({title:val('newsTitle'+i),body:val('newsBody'+i)})).filter(item=>item.title||item.body)};}}
+document.querySelectorAll('[data-panel]').forEach(button=>button.addEventListener('click',()=>showContent(button.dataset.panel)));
+document.getElementById('contentForm').addEventListener('input',()=>contentDirty=true);
+document.getElementById('contentForm').addEventListener('submit',async e=>{e.preventDefault();const button=document.getElementById('saveContentButton'),status=document.getElementById('contentStatus');if(button.disabled)return;const value=readContent();if(selectedSection==='home'&&!value.title||selectedSection==='services'&&value.items.some(i=>!i.title)||selectedSection==='contact'&&(!value.phone||!value.address||!/^@[a-zA-Z0-9._-]+$/.test(value.line))){status.textContent='請完整填寫必要欄位，LINE 帳號需以 @ 開頭。';return;}if(selectedSection==='hours'&&[value.morning,value.afternoon,value.evening].some(t=>!/^([01]\d|2[0-3]):[0-5]\d[–-]([01]\d|2[0-3]):[0-5]\d$/.test(t))){status.textContent='時段格式請使用 08:30–12:00。';return;}button.disabled=true;status.textContent='正在儲存…';try{const {data,error}=await db.from('healthcome_site_content').upsert({key:selectedSection,value},{onConflict:'key'}).select('key').single();if(error)throw error;if(!data)throw new Error('未取得儲存結果');contentDirty=false;contentValue=value;status.textContent='儲存成功，網站內容已更新。';}catch(error){status.textContent='儲存失敗：'+error.message;}finally{button.disabled=false;}});
+window.addEventListener('beforeunload',e=>{if(contentDirty){e.preventDefault();e.returnValue='';}});
+
+checkLogin().catch(error=>{const loading=document.getElementById('loading');loading.textContent=error.message+' 請重新整理後再試。';});
 
 </script>
 
