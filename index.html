@@ -102,7 +102,7 @@ function bindDoctorClicks() {
 
 loadDoctors();
 </script>
-<section class="contact" id="contact"><div class="contactbox"><div><h2>交通資訊</h2><div class="row"><strong>電話</strong><a href="tel:0226863898">02-26863898</a></div><div class="row"><strong>LINE ID</strong><a href="https://line.me/ti/p/~@106tdddj" target="_blank" rel="noopener noreferrer">@106tdddj</a></div><div class="row"><strong>地址</strong><span>新北市樹林區中山路一段118、120號</span></div></div></div></section>
+<section class="contact" id="contact"><div class="contactbox"><div><h2>診所資訊</h2><div class="row"><strong>電話</strong><a href="tel:0226863898">02-26863898</a></div><div class="row"><strong>LINE ID</strong><a href="https://line.me/ti/p/~@106tdddj" target="_blank" rel="noopener noreferrer">@106tdddj</a></div><div class="row"><strong>地址</strong><span>新北市樹林區中山路一段118、120號</span></div></div></div></section>
 <div class="modal" id="modal" aria-hidden="true"><button class="close" aria-label="關閉">×</button><img id="modalImg" alt="醫師完整介紹海報"></div><footer class="footer">© 2026 立康診所 HealthCome Clinic</footer>
 <script>const m=document.getElementById('modal'),mi=document.getElementById('modalImg');document.querySelectorAll('.doctor').forEach(x=>x.onclick=()=>{mi.src=x.dataset.img;m.classList.add('open');m.setAttribute('aria-hidden','false')});function closeM(){m.classList.remove('open');m.setAttribute('aria-hidden','true')}document.querySelector('.close').onclick=closeM;m.onclick=e=>{if(e.target===m)closeM()};document.addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
 </script>
