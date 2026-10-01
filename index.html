@@ -53,7 +53,9 @@
     return;
   }
 
-  const orderedDoctors = [...doctors].sort((a,b) => Number(String(b.name || '').includes('張家芸')) - Number(String(a.name || '').includes('張家芸')));
+  const doctorDisplayOrder=['張家芸','羅名宇','吳奇霖','羅錦祥','林儀儒','張簡世新','李建宇'];
+  const doctorRank=doctor=>{const rank=doctorDisplayOrder.findIndex(name=>String(doctor.name||'').includes(name));return rank<0?doctorDisplayOrder.length:rank;};
+  const orderedDoctors = [...doctors].sort((a,b)=>doctorRank(a)-doctorRank(b));
   doctorTeam.innerHTML = orderedDoctors.map(doctor => {
     const photo = doctor.photo_url || '';
     const name = doctor.name || '';
