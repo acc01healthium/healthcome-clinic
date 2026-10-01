@@ -324,7 +324,7 @@ document.getElementById('recruitModal').addEventListener('click', function(e) {
   }
 });
 </script>
-<script>document.addEventListener('keydown',function(e){const d=document.getElementById('recruitModal');if(d.getAttribute('aria-hidden')!=='false')return;if(e.key==='Escape')closeRecruitModal();if(e.key==='Tab'){const items=[...d.querySelectorAll('button,a[href]')];const first=items[0],last=items[items.length-1];if(e.shiftKey&&(document.activeElement===first||document.activeElement===d.querySelector('.recruit-panel'))){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}});</script><script>
+<script>document.addEventListener('keydown',function(e){const d=document.getElementById('recruitModal');if(d.getAttribute('aria-hidden')!=='false')return;if(e.key==='Escape')closeRecruitModal();if(e.key==='Tab'){const items=[...d.querySelectorAll('button,a[href]')];const first=items[0],last=items[items.length-1];if(e.shiftKey&&(document.activeElement===first||document.activeElement===d.querySelector('.recruit-panel'))){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}});</script><script src="news-front.js"></script><script>
 async function loadSiteContent(){try{const {data,error}=await healthcomeSupabase.from('healthcome_site_content').select('key,value');if(error){console.info('使用網站預設內容');return;}const content=clinicClone(CLINIC_DEFAULTS);for(const row of data||[])if(row.key in content&&row.value&&typeof row.value==='object')content[row.key]={...content[row.key],...row.value};
 const h=content.home;document.querySelector('.welcome-card h2').textContent=h.title;document.querySelector('.welcome-card p').textContent=h.description;
 if(Array.isArray(content.services.items))document.querySelectorAll('.service-grid article').forEach((el,i)=>{const item=content.services.items[i];if(item){el.querySelector('h2').textContent=item.title;el.querySelector('p').textContent=item.description;}});
@@ -332,7 +332,7 @@ const hours=content.hours;document.querySelectorAll('.hours-table').forEach(tabl
 const c=content.contact;document.querySelectorAll('a[href^="tel:"]').forEach(a=>{a.textContent=c.phone;a.href='tel:'+c.phone.replace(/[^+0-9]/g,'');});const lineUrl='https://line.me/ti/p/~'+encodeURIComponent(c.line);document.querySelectorAll('a[href^="https://line.me/"]').forEach(a=>{a.href=lineUrl;if(!a.querySelector('img'))a.textContent=c.line;});document.querySelector('.clinic-contact>p:nth-of-type(2)').textContent=c.address;document.querySelector('#contact .row:last-child span').textContent=c.address;
 // QR code remains the original account unless a verified replacement is supplied.
 if(c.line!==CLINIC_DEFAULTS.contact.line){const qr=document.querySelector('.line-qr');if(qr)qr.hidden=true;document.querySelector('.line-link').textContent='LINE：'+c.line;}
-const news=document.getElementById('news'),items=document.getElementById('newsItems');items.replaceChildren();for(const item of content.news.items||[]){if(!item.title)continue;const article=document.createElement('article'),title=document.createElement('h3'),body=document.createElement('p');title.textContent=item.title;body.textContent=item.body;article.append(title,body);items.append(article);}news.hidden=!items.children.length;
+renderClinicNews(content.news.items||[]);
 }catch(error){console.info('內容連線暫時不可用，使用預設內容。');}}
 loadSiteContent();
 </script></body>
