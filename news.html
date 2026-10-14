@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>最新消息｜立康診所</title>
+<meta name="description" content="立康診所最新公告、門診異動、健康衛教與活動訊息。">
+<link rel="stylesheet" href="news-page.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+<script src="news-page.js" defer></script>
+</head>
+<body>
+<header><div class="header-inner"><a class="brand" href="index.html#top">立康診所</a><nav aria-label="頁面導覽"><a href="schedule.html">門診時刻表</a><a href="index.html#top">返回首頁</a></nav></div></header>
+<main>
+<h1>最新消息</h1><div class="heading-line" aria-hidden="true"></div>
+<p id="newsStatus" role="status" aria-live="polite">正在載入最新消息…</p>
+<button type="button" id="retryNews" hidden>重新載入</button>
+<div id="newsList"></div>
+</main>
+<dialog id="newsLightbox" aria-label="消息圖片放大檢視"><button type="button" id="closeLightbox" aria-label="關閉圖片">×</button><img id="lightboxImage" alt=""></dialog>
+<footer>立康診所 · 全人、全家、全方位健康照護</footer>
+</body>
+</html>
