@@ -20,7 +20,7 @@ function newsCopy(text) {
   return wrapper;
 }
 function renderNewsPage(items) {
-  const articles = (Array.isArray(items) ? items : []).filter(item => item && item.title && item.is_published !== false).sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')));
+  const articles = (Array.isArray(items) ? items : []).filter(item => item && item.title && item.is_published !== false).sort((a,b)=>{const x=Number.isFinite(a.sort_order)?a.sort_order:Infinity,y=Number.isFinite(b.sort_order)?b.sort_order:Infinity;return x===y?String(b.date||'').localeCompare(String(a.date||'')):x-y;});
   newsList.replaceChildren();
   newsStatus.hidden = articles.length > 0; newsStatus.textContent = '目前尚無最新消息。';
   for (const item of articles) {
