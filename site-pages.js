@@ -41,7 +41,7 @@
  const photo=safeImage(d.photo_url),poster=safeImage(d.poster_url)||photo;
  const card=document.createElement(poster?'button':'article');card.className='doctor';if(poster)card.type='button';
  if(photo){const img=document.createElement('img');img.src=photo;img.alt=String(d.name||'')+'醫師';img.loading='lazy';card.append(img);}
- const meta=document.createElement('div');meta.className='meta';const name=document.createElement('h3');name.textContent=(d.name||'')+' '+(d.title||'醫師');const detail=document.createElement('p');detail.textContent=[d.specialty,d.slogan].filter(Boolean).join('・');meta.append(name,detail);card.append(meta);
+ const meta=document.createElement('div');meta.className='meta';const name=document.createElement('h3');name.textContent=(d.name||'')+' '+(d.title||'醫師');meta.append(name);for(const value of [d.specialty,d.slogan]){if(!value)continue;const detail=document.createElement('p');detail.textContent=value;detail.style.whiteSpace='pre-line';meta.append(detail);}card.append(meta);
  if(poster)card.addEventListener('click',()=>{returnFocus=card;const img=document.getElementById('doctorPoster');img.src=poster;img.alt=(d.name||'')+'醫師完整介紹';dialog.showModal();document.body.style.overflow='hidden';dialog.querySelector('button').focus();});team.append(card);
  }
  }catch(error){team.textContent='醫師資料暫時無法載入，請稍後再試。';retry.hidden=false;}
