@@ -4,12 +4,29 @@
  const current=location.pathname.split('/').pop()||'index.html';
  document.querySelectorAll('.site-header nav a').forEach(a=>{if(a.getAttribute('href')===current)a.setAttribute('aria-current','page');});
  const defaults=window.CLINIC_DEFAULTS||{};
+
+ function renderSchedule(schedule){
+ const container=document.getElementById('scheduleImages');if(!container)return;
+ const note=document.getElementById('scheduleIntro');if(note){note.textContent=schedule.note||'';note.hidden=!schedule.note;}
+ container.replaceChildren();
+ const items=(Array.isArray(schedule.items)?schedule.items:[]).slice(0,2);
+ items.forEach((item,i)=>{
+ const url=safeImage(item.image);if(!url)return;
+ const title=item.title||'門診時刻表 '+(i+1);
+ const figure=document.createElement('figure'),caption=document.createElement('figcaption');caption.textContent=title;
+ const link=document.createElement('a');link.href=url;link.target='_blank';link.rel='noopener noreferrer';link.setAttribute('aria-label','開啟 '+title+' 原圖（新分頁）');
+ const img=document.createElement('img');img.src=url;img.alt='立康診所 '+title;link.append(img);figure.append(caption,link);container.append(figure);
+ });
+ if(!container.children.length){const empty=document.createElement('p');empty.textContent='門診時刻表更新中，歡迎來電洽詢。';container.append(empty);}
+ }
+
  function renderContent(content){
   const h=content.home||{};
   const title=document.querySelector('.welcome-card h2'),description=document.querySelector('.welcome-card p');
   if(title&&h.title)title.textContent=h.title;if(description&&h.description)description.textContent=h.description;
   if(Array.isArray(content.services?.items))document.querySelectorAll('.service-grid article').forEach((card,i)=>{const item=content.services.items[i];if(item){card.querySelector('h2').textContent=item.title||'';card.querySelector('p').textContent=item.description||'';}});
   if(content.hours)renderClinicHours(content.hours);
+  if(content.schedule)renderSchedule(content.schedule);
   const c=content.contact||{};
   if(c.phone)document.querySelectorAll('[data-clinic-phone]').forEach(a=>{a.textContent=c.phone;a.href='tel:'+String(c.phone).replace(/[^+0-9]/g,'');});
   if(c.address)document.querySelectorAll('[data-clinic-address]').forEach(e=>e.textContent=c.address);
