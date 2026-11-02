@@ -31,7 +31,7 @@ function scheduleFilenameRange(name){
  const m=s.match(/((?:19|20)\d{2})年(\d{1,2})月.*?(\d{1,2})[-–~～至](\d{1,2})日/);
  return m?scheduleDateRange(m[1]+'年'+m[2]+'月'+m[3]+'日-'+m[4]+'日'):'';
 }
-function scheduleSyncDateSave(){const b=document.getElementById('saveContentButton');if(b)b.disabled=contentSaving||(selectedSection==='schedule'&&scheduleDateJobs.size>0);}
+function scheduleSyncDateSave(){const b=document.getElementById('saveContentButton');if(b)b.disabled=contentSaving||(selectedSection==='schedule'&&scheduleDateJobs.size>0);document.querySelectorAll('.schedule-move').forEach(button=>{button.disabled=contentSaving||scheduleDateJobs.size>0||button.dataset.newsBoundary==='true';});}
 function scheduleDateMessage(i,message){scheduleDateMessages.set(i,message);const p=document.getElementById('scheduleDateStatus'+i);if(p){p.textContent=message;p.hidden=!message;}}
 function cancelScheduleDate(i){scheduleDateJobs.delete(i);scheduleDateMessages.delete(i);scheduleSyncDateSave();}
 function resetScheduleDates(){scheduleDateJobs.clear();scheduleDateMessages.clear();scheduleSyncDateSave();}

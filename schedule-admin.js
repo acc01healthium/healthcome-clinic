@@ -6,7 +6,7 @@ function scheduleUrl(value){if(!value)return '';try{const u=new URL(value,locati
 function scheduleDraft(){return {note:contentValue.note||'',items:Array.from({length:2},(_,i)=>({title:contentValue.items?.[i]?.title||'',image:contentValue.items?.[i]?.image||''}))};}
 function renderScheduleEditor(){
  contentValue=scheduleDraft();const container=document.getElementById('contentFields');container.replaceChildren();
- const info=document.createElement('p');info.textContent='可同時顯示兩張門診時刻表。上傳圖片後會自動辨識日期，請確認標題後按「儲存」，前台即可更新。支援 JPG、PNG、WebP，每張最大 5 MB。';container.append(info);
+ const info=document.createElement('p');info.textContent='可同時顯示兩張門診時刻表。上傳圖片後會自動辨識日期，請確認標題後按「儲存」，前台即可更新。可用「上移／下移」調整圖片順序，標題會一起移動。支援 JPG、PNG、WebP，每張最大 5 MB。';container.append(info);
  const note=document.createElement('div');note.innerHTML=field('頁面說明','scheduleNote',contentValue.note,true);container.append(note);
  contentValue.items.forEach((item,i)=>{
  const box=document.createElement('fieldset');box.dataset.scheduleSlot=String(i);
@@ -20,10 +20,33 @@ function renderScheduleEditor(){
  });
  box.querySelector('.schedule-remove').addEventListener('click',()=>{cancelScheduleDate(i);contentValue=readScheduleEditor();contentValue.items[i].image='';scheduleUploads.delete(i);if(scheduleObjectUrls.has(i))URL.revokeObjectURL(scheduleObjectUrls.get(i));scheduleObjectUrls.delete(i);contentDirty=true;renderScheduleEditor();});
  box.querySelector('.schedule-retry-date').addEventListener('click',()=>{const source=scheduleUploads.get(i)||scheduleUrl(contentValue.items[i].image);if(source)scheduleRecognizeDate(i,source,scheduleUploads.get(i)?.name||'');else scheduleDateMessage(i,'請先選擇班表圖片。');});
+
+ const order=document.createElement('div');order.className='schedule-order-actions';
+ for(const [step,label]of [[-1,'↑ 上移'],[1,'↓ 下移']]){
+ const button=document.createElement('button');button.type='button';button.className='schedule-move';button.dataset.step=String(step);button.textContent=label;button.setAttribute('aria-label',label+'第 '+(i+1)+' 張時刻表');
+ button.dataset.newsBoundary=String(i+step<0||i+step>=contentValue.items.length);button.disabled=button.dataset.newsBoundary==='true'||scheduleDateJobs.size>0;
+ button.addEventListener('click',()=>moveScheduleItem(i,step));order.append(button);
+ }
+ box.insertBefore(order,box.querySelector('label'));
  paint();container.append(box);scheduleDateMessage(i,scheduleDateMessages.get(i)||'');
  });
  const link=document.createElement('a');link.href='schedule.html';link.target='_blank';link.rel='noopener';link.textContent='查看前台門診時刻表 ↗';container.append(link);scheduleSyncDateSave();
 }
+
+function moveScheduleItem(i,step){
+ if(contentSaving)return;
+ if(scheduleDateJobs.size){document.getElementById('contentStatus').textContent='正在辨識圖片日期，完成後即可調整順序。';return;}
+ const target=i+step;if(target<0||target>=contentValue.items.length)return;
+ contentValue=readScheduleEditor();
+ [contentValue.items[i],contentValue.items[target]]=[contentValue.items[target],contentValue.items[i]];
+ for(const map of [scheduleUploads,scheduleObjectUrls,scheduleDateMessages]){
+ const hasA=map.has(i),hasB=map.has(target),a=map.get(i),b=map.get(target);map.delete(i);map.delete(target);if(hasB)map.set(i,b);if(hasA)map.set(target,a);
+ }
+ contentDirty=true;renderScheduleEditor();
+ document.getElementById('contentStatus').textContent='時刻表順序已調整，請按「儲存」更新前台。';
+ const fieldset=document.querySelector('[data-schedule-slot="'+target+'"]');fieldset?.querySelector('.schedule-move:not(:disabled)')?.focus();
+}
+
 function readScheduleEditor(){return {note:document.getElementById('scheduleNote').value.trim(),items:contentValue.items.map((item,i)=>({...item,title:document.getElementById('scheduleTitle'+i).value.trim()}))};}
 async function uploadScheduleImages(value){
  for(const [i,file]of [...scheduleUploads]){
@@ -31,4 +54,4 @@ async function uploadScheduleImages(value){
  const url=await uploadDoctorImage(file,'schedule');value.items[i].image=url;contentValue.items[i].image=url;scheduleUploads.delete(i);if(scheduleObjectUrls.has(i))URL.revokeObjectURL(scheduleObjectUrls.get(i));scheduleObjectUrls.delete(i);
  }
 }
-const scheduleStyle=document.createElement('style');scheduleStyle.textContent='#contentFields fieldset[data-schedule-slot]{border:2px solid #99bcae;border-left:6px solid #358f7f;padding:10px 12px;background:#f1f8f4;margin:14px 0}#contentFields fieldset[data-schedule-slot] legend{background:#2f786b;color:white;padding:4px 10px;border-radius:5px;font-weight:700}#contentFields fieldset[data-schedule-slot]>label{margin:8px 0 4px}#contentFields fieldset[data-schedule-slot] input{padding:6px 8px}.schedule-image-preview img{display:block;width:auto;max-width:100%;max-height:260px;margin:10px 0;object-fit:contain}.schedule-date-status{font-size:14px;line-height:1.5;color:#2f786b;margin:5px 0}.schedule-retry-date{padding:6px 10px;background:white;border:1px solid #b9ccc5;border-radius:6px;color:#2f786b;cursor:pointer}.schedule-remove{padding:6px 10px;background:white;border:1px solid #b9ccc5;border-radius:6px;color:#a44040;cursor:pointer}#scheduleNote{height:64px;resize:vertical}';document.head.append(scheduleStyle);
+const scheduleStyle=document.createElement('style');scheduleStyle.textContent='#contentFields fieldset[data-schedule-slot]{border:2px solid #99bcae;border-left:6px solid #358f7f;padding:10px 12px;background:#f1f8f4;margin:14px 0}#contentFields fieldset[data-schedule-slot] legend{background:#2f786b;color:white;padding:4px 10px;border-radius:5px;font-weight:700}#contentFields fieldset[data-schedule-slot]>label{margin:8px 0 4px}#contentFields fieldset[data-schedule-slot] input{padding:6px 8px}.schedule-image-preview img{display:block;width:auto;max-width:100%;max-height:260px;margin:10px 0;object-fit:contain}.schedule-date-status{font-size:14px;line-height:1.5;color:#2f786b;margin:5px 0}.schedule-retry-date{padding:6px 10px;background:white;border:1px solid #b9ccc5;border-radius:6px;color:#2f786b;cursor:pointer}.schedule-remove{padding:6px 10px;background:white;border:1px solid #b9ccc5;border-radius:6px;color:#a44040;cursor:pointer}#scheduleNote{height:64px;resize:vertical}.schedule-order-actions{display:flex;gap:6px;margin:4px 0 8px}.schedule-move{padding:5px 10px;background:white;border:1px solid #b9ccc5;border-radius:6px;color:#2f786b;cursor:pointer}.schedule-move:disabled{opacity:.4;cursor:not-allowed}';document.head.append(scheduleStyle);
